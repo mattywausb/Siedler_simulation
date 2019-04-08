@@ -39,23 +39,22 @@ func modify_team_score(delta):
 		team_score=0
 	get_node("Scoreboard/ScoreDisplay").set_text("%03d" % team_score)
 	
-func can_afford(target_settlement):
+func amount_missing(target_price):
 	var deviation=0
 	var team_resources=summarize_team_resources()
-	prints("checking_price",target_settlement.settlement_price)
+	prints("checking_price",target_price)
 	for i in range(0,team_resources.size()):
-		if team_resources[i]<target_settlement.settlement_price[i]:
-			deviation+=target_settlement.settlement_price[i]-team_resources[i]
-	return deviation <= 0 
+		if team_resources[i]<target_price[i]:
+			deviation+=target_price[i]-team_resources[i]
+	return deviation 
 		
 	
 func has_interest_on_settlement(target_settlement,initiating_teammate):
 	if(target_settlement.get_owner_team()!=null):
 		return false
-	if !can_afford(target_settlement):
+	if amount_missing(target_settlement.settlement_price)>0:
 		return false
 	leading_teammate=initiating_teammate
-	prints(initiating_teammate.get_instance_id(),"tries to buy settlement",target_settlement.get_instance_id())
 	return true
 	
 func cancel_plan():
@@ -82,7 +81,16 @@ func get_owned_settlement(index):
 	
 func get_owned_settlement_count():
 	return owned_settlement.size()
-	
+
+func get_member_count():
+	return $Teammates.get_child_count()
+
+func get_resource_collector_count():
+	var collector_count=0
+	for p in range(0,$Teammates.get_child_count()):
+		if $Teammates.get_child(p).is_gathering_resources():
+			collector_count+=1
+	return collector_count
 #func _process(delta):
 #	# Called every frame. Delta is time since last frame.
 #	# Update game logic here.

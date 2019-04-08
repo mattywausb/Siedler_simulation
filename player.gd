@@ -19,6 +19,10 @@ var my_team
 var strategic_target_price=[0,0,0,0,0]
 var strategic_target=ST_GATHER_INFORMATION
 var strategic_target_settlement
+var startegic_target_asset=SA_SETTLEMENT
+
+enum {SA_SETTLEMENT,SA_TOWN}
+
 var last_settlement_seen
 
 
@@ -156,9 +160,10 @@ func update_inventory_display():
 		else:
 			inventory_display.get_child(i).visible=false
 
-func copy_to_strategic_target_price(new_price_setting):
+func set_strategic_target_price(new_price_setting):
 	for r in range(0,strategic_target_price.size()):
 		strategic_target_price[r]=new_price_setting[r]
+	update_inventory_display()
 
 func process_visual_update(delta):
 	
@@ -322,16 +327,11 @@ func choose_task():
 
 	if strategic_target==ST_BUY_SETTLEMENT:
 	# can we go, and buy the settlement ?
-		var can_buy=true
-		for r in range(0,ressource_inventory.size()):
-			if(strategic_target_settlement.settlement_price[r]>ressource_inventory[r]):
-				can_buy=false
-				break
-		if can_buy:
+		if amount_missing(strategic_target_price)==0:
 			manage_PT_BUY_BUILDING(PE_IDLE)
 			return
 		
-		if my_team.can_afford(strategic_target_settlement):
+		if my_team.amount_missing(strategic_target_settlement.settlement_price)==0:
 			manage_PT_EXCHANGE_WITH_TEAMMATE(PE_IDLE)
 			return
 		else:
@@ -346,7 +346,13 @@ func choose_task():
 			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_IDLE)
 			return
    
-		
+	if	(my_team.get_owned_settlement_count()>0 
+	 	and my_team.get_resource_collector_count()<= my_team.get_member_count()/2 
+	 	and my_team.get_resource_collector_count()<=my_team.get_owned_settlement_count()/3):
+			strategic_target=ST_GATHER_RESOURCES
+	else:
+			strategic_target=ST_GATHER_INFORMATION
+	
 	if strategic_target==ST_GATHER_RESOURCES:
 		if strategic_target_settlement:
 				manage_PT_EXCHANGE_WITH_SETTLEMENT(PE_IDLE)		
@@ -354,7 +360,7 @@ func choose_task():
 		if get_sunpoint_sum()>=2:
 			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_IDLE)
 			return
-		if my_team.get_owned_settlement_count()>0:
+	
 			var try_index=randi()%my_team.get_owned_settlement_count()
 			if last_settlement_seen!=my_team.get_owned_settlement(try_index):	
 				strategic_target_settlement=my_team.get_owned_settlement(try_index)	
@@ -394,9 +400,9 @@ func manage_PT_STROLL_AROUND(event):
 			last_settlement_seen=target_of_operation
 			if target_of_operation.get_owner_team()==null:
 				if my_team.has_interest_on_settlement(target_of_operation,self):
+					prints(get_instance_id(),"tries to buy settlement",target_of_operation.get_instance_id())
 					strategic_target_settlement=target_of_operation
-					copy_to_strategic_target_price(strategic_target_settlement.settlement_price)
-					update_inventory_display()
+					set_strategic_target_price(strategic_target_settlement.settlement_price)
 					strategic_target=ST_BUY_SETTLEMENT
 					choose_task()
 					return
@@ -425,11 +431,7 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 		print_trace_event(event)
 		if enter_PO_EXCHANGE_MASTER(): # we have a conntection will trigger timer
 			# check if we can complete our set to buy the building
-			var completion_possible=true
-			for r in range(0,ressource_inventory.size()):
-				if(ressource_inventory[r]+target_of_operation.ressource_inventory[r]<strategic_target_price[r]):
-					completion_possible=false
-					break			
+			var completion_possible=(amount_missing(strategic_target_price)==1)
 			
 			# get resoureces needed and available
 			for r in range(0,ressource_inventory.size()):
@@ -437,7 +439,7 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 					var amount=0
 					if completion_possible: # take anything you need
 						amount=strategic_target_price[r]-ressource_inventory[r]
-					else: # take whats needed and partner can give
+					else: # take whats needed and partner can spend
 						if target_of_operation.ressource_inventory[r]>target_of_operation.strategic_target_price[r]:
 							amount=target_of_operation.ressource_inventory[r]-target_of_operation.strategic_target_price[r]
 					print_trace_with_note("Receiving ressource")
@@ -539,7 +541,7 @@ func manage_PT_BUY_BUILDING(event):
 		last_settlement_seen=target_of_operation
 		if(strategic_target_settlement.get_owner_team()): # already bought
 			strategic_target_settlement=null
-			strategic_target=ST_GATHER_RESOURCES
+			strategic_target=ST_GATHER_INFORMATION
 			choose_task()
 			return
 		if enter_PO_EXCHANGE_WITH_STATION(4):
@@ -590,7 +592,7 @@ func determine_best_change_partner():
 					this_score+=1
 					if(teammate.strategic_target_price[r]==0 ):
 						this_score+=1
-		if this_score>best_score or (this_score==best_score and randi()%get_parent().get_child_count()==0):
+		if this_score>best_score or (this_score>0 and this_score==best_score and randi()%get_parent().get_child_count()==0):
 			best_teammate=teammate
 	if best_teammate:
 		target_of_operation=best_teammate
@@ -635,3 +637,12 @@ func get_sunpoint_sum():
 		sun_point_sum+=sunpoint_inventory[i]
 	return sun_point_sum
 	
+func amount_missing(target_price):
+	var deviation=0
+	for r in range(0,ressource_inventory.size()):
+		if ressource_inventory[r]<target_price[r]:
+			deviation+=target_price[r]-ressource_inventory[r]
+	return deviation
+
+func is_gathering_resources():
+	return (strategic_target==ST_GATHER_RESOURCES)

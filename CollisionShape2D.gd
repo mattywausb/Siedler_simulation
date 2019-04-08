@@ -9,6 +9,7 @@ var current_sun_points=2  #inital sun point you get, when buying the settlement
 var owner_team
 var settlement_price=[0,0,0,0,0]
 var settlement_ressource=-1
+var is_town=false
 
 
 const inventory_color=[	"cb0b0b", # 1 = brick
