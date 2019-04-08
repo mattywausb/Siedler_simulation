@@ -1,0 +1,205 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://CollisionShape2D.gd" type="Script" id=1]
+
+[sub_resource type="CircleShape2D" id=1]
+
+custom_solver_bias = 0.0
+radius = 21.9558
+
+[sub_resource type="CircleShape2D" id=2]
+
+custom_solver_bias = 0.0
+radius = 5.27125
+
+[node name="Settlement" type="StaticBody2D" index="0"]
+
+position = Vector2( 0.34251, 0.339762 )
+scale = Vector2( 0.630138, 0.619179 )
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
+script = ExtResource( 1 )
+
+[node name="SettlementVision" type="Area2D" parent="." index="0"]
+
+position = Vector2( 0, -10 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+monitoring = false
+audio_bus_override = false
+audio_bus_name = "Master"
+_sections_unfolded = [ "Collision", "Transform", "Visibility" ]
+
+[node name="SettelementVisionCollider" type="CollisionShape2D" parent="SettlementVision" index="0"]
+
+shape = SubResource( 1 )
+
+[node name="Flag" type="Node2D" parent="." index="1"]
+
+[node name="FlagPole" type="Polygon2D" parent="Flag" index="0"]
+
+polygon = PoolVector2Array( -1.18168, -19.1644, -1.52962, -34.7059, -0.48579, -34.7059, 0.210102, -18.9324 )
+uv = PoolVector2Array(  )
+color = Color( 0, 0, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="FlagFabric" type="Polygon2D" parent="Flag" index="1"]
+
+polygon = PoolVector2Array( -0.253826, -34.9379, 2.87769, -34.358, 8.09687, -36.3297, 12.8521, -36.3297, 13.548, -27.5151, 9.25668, -28.6749, 3.80554, -25.7753, 0.210102, -27.3991 )
+uv = PoolVector2Array(  )
+color = Color( 1, 1, 1, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="MainShape" type="Polygon2D" parent="." index="2"]
+
+polygon = PoolVector2Array( -24, 6, -24, -27, -12.2313, -27.0332, -12.7557, -19.8654, 10.6485, -19.8603, 10.1462, -26.6835, 24, -27, 24, 6, 5.42928, 5.19183, 5.42928, -2.34699, 2.99367, -6.29037, -0.48579, -6.98627, -3.84926, -5.94243, -6.1689, -1.18717, -6.05292, 5.42379 )
+uv = PoolVector2Array(  )
+color = Color( 0.394531, 0.394531, 0.394531, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="SettlementCollision" type="CollisionShape2D" parent="." index="3"]
+
+position = Vector2( -0.349648, 1.90735e-006 )
+shape = SubResource( 2 )
+
+[node name="Inventory" type="Node2D" parent="." index="4"]
+
+position = Vector2( 0.263519, 2.10815 )
+
+[node name="InventorySlot5" type="Polygon2D" parent="Inventory" index="0"]
+
+position = Vector2( 2.73648, -14.1082 )
+polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot6" type="Polygon2D" parent="Inventory" index="1"]
+
+position = Vector2( 11.7365, -14.1082 )
+polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot7" type="Polygon2D" parent="Inventory" index="2"]
+
+position = Vector2( -6.26352, -14.1082 )
+polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot8" type="Polygon2D" parent="Inventory" index="3"]
+
+position = Vector2( 20.7365, -14.1082 )
+polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot9" type="Polygon2D" parent="Inventory" index="4"]
+
+position = Vector2( -15.2635, -14.1082 )
+polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="sun_point_trigger" type="Timer" parent="." index="5"]
+
+process_mode = 1
+wait_time = 10.0
+one_shot = false
+autostart = true
+
+[node name="Sign" type="Polygon2D" parent="." index="6"]
+
+polygon = PoolVector2Array( 10.0686, -8.72599, 20.275, -8.72599, 19.927, -1.76708, 17.6074, 1.24844, 14.9398, 2.06032, 11.6923, 0.900501, 10.1845, -1.6511 )
+uv = PoolVector2Array(  )
+color = Color( 1, 1, 1, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[connection signal="timeout" from="sun_point_trigger" to="." method="_on_sun_point_trigger_timeout"]
+
+

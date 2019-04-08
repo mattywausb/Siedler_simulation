@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://townhall.gd" type="Script" id=1]
+
+[sub_resource type="CircleShape2D" id=1]
+
+custom_solver_bias = 0.0
+radius = 10.9261
+
+[node name="Townhall" type="StaticBody2D"]
+
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
+script = ExtResource( 1 )
+
+[node name="MainShape" type="Polygon2D" parent="." index="0"]
+
+position = Vector2( 0.370726, 0 )
+scale = Vector2( 1.01424, 1 )
+polygon = PoolVector2Array( -26.0424, 5.65892, -25.9202, -26.3947, -17.6508, -14.271, -11.3249, -26.1801, -3.81252, -13.5165, 4.1291, -24.6776, 13.2288, -12.8725, 20.2124, -24.463, 20.6357, 5.4841, 4.02737, 5.30928, -7.33619, 5.4841 )
+uv = PoolVector2Array(  )
+color = Color( 0.679688, 0.671805, 0.175232, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+
+position = Vector2( -0.993561, -5.58059 )
+shape = SubResource( 1 )
+
+
