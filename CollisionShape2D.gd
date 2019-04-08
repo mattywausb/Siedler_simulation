@@ -5,7 +5,7 @@ extends StaticBody2D
 # var b = "textvar"
 var exchange_partner=null
 var my_index=-1
-var current_sun_points=0
+var current_sun_points=2  #inital sun point you get, when buying the settlement
 var owner_team
 var settlement_price=[0,0,0,0,0]
 var settlement_ressource=-1
@@ -94,6 +94,7 @@ func set_owner_team(team):
 		$Flag/FlagFabric.color=owner_team.get_teamColor()
 		$Flag.visible=true
 		update_inventory_display()
+		$sun_point_trigger.start()
 		return true
 	else:
 		return false

@@ -1,7 +1,14 @@
 extends KinematicBody2D
 
 
+
 # class member variables go here, for example:
+	
+# game parameters for player
+
+const player_move_speed=80  
+const player_stroll_speed=60  
+
 
 enum {BRICK,IRON,WOOL,WEED,WOOD}
 	
@@ -21,8 +28,6 @@ var player_operation=PO_IDLE
 var target_of_operation
 
 var player_move_vector
-var player_move_speed=80  
-var player_stroll_speed=40  
 var last_collider
 var player_team_color_index=0
 
@@ -549,7 +554,7 @@ func manage_PT_BUY_BUILDING(event):
 		return
 		
 	if event==PE_EXCHANGE_COMPLETE:
-		if(strategic_target_settlement!=target_of_operation):
+		if(target_of_operation==get_node("/root/Spiel/Townhall")): #when at
 			print_trace_event(event)
 			target_of_operation.disconnect_exchange_partner(self)
 			if my_team.take_posession(strategic_target_settlement):
@@ -557,7 +562,7 @@ func manage_PT_BUY_BUILDING(event):
 				my_team.modify_team_score(1)
 				for r in range(0,strategic_target_price.size()):
 					strategic_target_price[r]=0
-				update_inventory_display()
+				modify_sunpoint_add(strategic_target_settlement.give_sun_points())
 				enter_PO_GOTO_TARGET(strategic_target_settlement)			
 			else:
 				strategic_target=ST_GATHER_INFORMATION
