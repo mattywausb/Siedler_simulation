@@ -11,6 +11,7 @@ var settlement_price=[0,0,0,0,0]
 var settlement_ressource=-1
 var is_town=false
 
+const upgrade_price_town=[0,3,0,2,0]
 
 const inventory_color=[	"cb0b0b", # 1 = brick
 					"000010", # 4 = iron
@@ -23,9 +24,8 @@ const sunpoint_color="f0f000"
 enum {BRICK,IRON,WOOL,WEED,WOOD}
 
 func _ready():
-	for i in range(0,2+int(my_index/6)):
-		settlement_price[randi()%settlement_price.size()]+=1
 	$Flag.visible=false
+	$MainShape/TownSymbol.visible=false
 	update_inventory_display()
 	pass
 
@@ -38,17 +38,27 @@ func _process(delta):
 func set_settlement_ressource(r):
 	settlement_ressource=r
 	$Sign.color=Color(inventory_color[settlement_ressource])
+	
+func set_settlement_price(distance_to_station):
+	var total_ressource_count=int(max(0,500-distance_to_station)/40)+2
+#	prints("Totel ressources",total_ressource_count)
+	for i in range(0,total_ressource_count):
+		settlement_price[randi()%settlement_price.size()]+=1
+	update_inventory_display()
 
-			
 func update_inventory_display():
 	var inventory_display=get_node("Inventory")
 	if owner_team!=null:
 		for i in range(0,inventory_display.get_child_count()):
-			if i<current_sun_points:
-				inventory_display.get_child(i).color=Color(sunpoint_color)
-				inventory_display.get_child(i).visible=true
-			else:
-				inventory_display.get_child(i).visible=false
+			inventory_display.get_child(i).visible=false
+		if current_sun_points==1:
+			inventory_display.get_child(0).color=sunpoint_color
+			inventory_display.get_child(0).visible=true
+		elif current_sun_points==2:	
+			inventory_display.get_child(2).color=sunpoint_color
+			inventory_display.get_child(1).color=sunpoint_color
+			inventory_display.get_child(2).visible=true
+			inventory_display.get_child(1).visible=true
 	else: # not taken yet
 		var slot_index=0
 		for r in range(0,settlement_price.size()):
@@ -59,6 +69,8 @@ func update_inventory_display():
 					slot_index+=1
 		for i in range (slot_index,inventory_display.get_child_count()):
 			inventory_display.get_child(i).visible=false
+	$MainShape/TownSymbol.visible=is_town
+	$MainShape/SettlementSymbol.visible=!is_town
 
 func connect_exchange_partner(partner):
 	if exchange_partner:
@@ -85,9 +97,13 @@ func disconnect_exchange_partner(partner):
 		exchange_partner=null
 
 func _on_sun_point_trigger_timeout():
-	if current_sun_points<3 and exchange_partner==null and owner_team:
-		current_sun_points+=1
-		update_inventory_display()
+		
+	if is_town:
+		current_sun_points = 2
+	else:
+		current_sun_points = 1
+
+	update_inventory_display()
 
 func set_owner_team(team):
 	if owner_team==null:
@@ -105,5 +121,15 @@ func get_owner_team():
 
 func get_settlement_price():
 	return settlement_price
+	
+func is_town():
+	return is_town
+
+func get_upgrade_price_town():
+	return upgrade_price_town	
+
+func upgrade_to_town():
+	is_town=true
+	update_inventory_display()
 
 

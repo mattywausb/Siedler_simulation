@@ -24,6 +24,7 @@ var startegic_target_asset=SA_SETTLEMENT
 enum {SA_SETTLEMENT,SA_TOWN}
 
 var last_settlement_seen
+var last_player_exchanged_with
 
 
 var player_task=PT_IDLE
@@ -240,7 +241,7 @@ func process_operation(delta):
 			
 	if player_operation==PO_GO_POSITION:
 		player_move_vector=(target_of_operation - get_global_position()).normalized()
-		if target_of_operation.distance_to(get_global_position())>10:
+		if target_of_operation.distance_to(get_global_position())>25:
 			var collision=move_and_collide(player_move_vector * player_stroll_speed * delta)
 			if collision:
 					enter_PS_SIDESTEP(collision)
@@ -265,6 +266,7 @@ func enter_PO_PAUSE():
 func enter_PO_EXCHANGE_MASTER():
 	if target_of_operation.enter_PO_EXCHANGE_CLIENT(self):
 		player_operation=PO_EXCHANGE_MASTER
+		last_player_exchanged_with=target_of_operation
 		print_trace_with_target(target_of_operation)
 		get_node("Timer").set_wait_time(2)
 		get_node("Timer").start()
@@ -279,6 +281,7 @@ func enter_PO_EXCHANGE_CLIENT(partner):
 		and player_task!=PT_BUY_BUILDING ):
 				player_operation=PO_EXCHANGE_CLIENT
 				target_of_operation=partner
+				last_player_exchanged_with=partner
 				player_state=PS_NORMAL
 				player_task=PT_EXCHANGE_WITH_TEAMMATE
 				print_trace_with_target(target_of_operation)
@@ -327,7 +330,7 @@ func choose_task():
 
 	if strategic_target==ST_BUY_SETTLEMENT:
 	# can we go, and buy the settlement ?
-		if amount_missing(strategic_target_price)==0:
+		if amount_missing(strategic_target_price)==0:  # yes
 			manage_PT_BUY_BUILDING(PE_IDLE)
 			return
 		
@@ -342,7 +345,7 @@ func choose_task():
 			update_inventory_display()
 	
 	# should go to warehouse urgent
-	if get_sunpoint_sum()>=4:
+	if get_sunpoint_sum()>=3:
 			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_IDLE)
 			return
    
@@ -430,21 +433,25 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 	if event==PE_TARGET_MET:
 		print_trace_event(event)
 		if enter_PO_EXCHANGE_MASTER(): # we have a conntection will trigger timer
-			# check if we can complete our set to buy the building
-			var completion_possible=(amount_missing(strategic_target_price)==1)
 			
 			# get resoureces needed and available
 			for r in range(0,ressource_inventory.size()):
 				if (ressource_inventory[r]<strategic_target_price[r]):
 					var amount=0
-					if completion_possible: # take anything you need
-						amount=strategic_target_price[r]-ressource_inventory[r]
-					else: # take whats needed and partner can spend
-						if target_of_operation.ressource_inventory[r]>target_of_operation.strategic_target_price[r]:
-							amount=target_of_operation.ressource_inventory[r]-target_of_operation.strategic_target_price[r]
+					if target_of_operation.ressource_inventory[r]>target_of_operation.strategic_target_price[r]:
+						amount=target_of_operation.ressource_inventory[r]-target_of_operation.strategic_target_price[r]
 					print_trace_with_note("Receiving ressource")
 					target_of_operation.modify_inventory_slot(r,-amount)
 					modify_inventory_slot(r,amount)
+					
+			# if only 1 resource is missing try to get it even partner needs it but is not finished
+			if (target_of_operation.amount_missing(target_of_operation.strategic_target_price)>0
+				and amount_missing(strategic_target_price)==1):
+					for r in range(0,ressource_inventory.size()):
+						if (ressource_inventory[r]<strategic_target_price[r] and
+							target_of_operation.ressource_inventory[r]>0):
+							target_of_operation.modify_inventory_slot(r,-1)
+							modify_inventory_slot(r,1)
 		else:
 			enter_PO_PAUSE()
 		return
@@ -526,6 +533,7 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 		update_inventory_display()
 		target_of_operation.disconnect_exchange_partner(self)
 		strategic_target=ST_GATHER_INFORMATION
+		last_player_exchanged_with=null
 		choose_task()
 		return
 
@@ -579,19 +587,23 @@ func manage_PT_BUY_BUILDING(event):
 func determine_best_change_partner():
 	var best_teammate
 	var best_score=0
+	var candidate_count=0
 	for p in range(0,get_parent().get_child_count()):
 		var teammate=get_parent().get_child(p)
 		var this_score=0
-		if teammate== self:
+		if teammate== self or teammate==last_player_exchanged_with:
 			continue
 		for r in range(0, ressource_inventory.size()):
 			if(ressource_inventory[r]<strategic_target_price[r] and
-				teammate.ressource_inventory[r]>0):
+				teammate.ressource_inventory[r]>0): # candidate has missing ressource
 				this_score+=1
-				if(teammate.ressource_inventory[r]>teammate.strategic_target_price[r]):
+				candidate_count+=1
+				if(teammate.ressource_inventory[r]>teammate.strategic_target_price[r]): # candidate has more then he needs
 					this_score+=1
-					if(teammate.strategic_target_price[r]==0 ):
+					if(teammate.strategic_target_price[r]==0 ): # candidate does not need it at all
 						this_score+=1
+			if teammate==last_player_exchanged_with:
+				this_score-=1
 		if this_score>best_score or (this_score>0 and this_score==best_score and randi()%get_parent().get_child_count()==0):
 			best_teammate=teammate
 	if best_teammate:

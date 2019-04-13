@@ -13,8 +13,8 @@ func _ready():
 	# initiate players (position, color, resources)
 	for i in range(0,$Teammates.get_child_count()):
 		randomize()
-		var x=randi()%(int(get_viewport().size.x)-50)+25
-		var y=randi()%(int(get_viewport().size.y)-50)+25
+		var x=randi()%(int(get_viewport().size.x/8))-get_viewport().size.x/16+get_viewport().size.x/2
+		var y=randi()%(int(get_viewport().size.y/8))-get_viewport().size.y/16+get_viewport().size.y/2
 		$Teammates.get_child(i).set_position(Vector2(x,y))
 		$Teammates.get_child(i).modify_inventory_slot(i%5,1)
 		print("Place player to " ,x,",",y)

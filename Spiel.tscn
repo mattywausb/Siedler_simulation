@@ -50,8 +50,6 @@ position = Vector2( 685.541, 441.374 )
 
 [node name="settlements" type="Node" parent="." index="4"]
 
-editor/display_folded = true
-
 [node name="Settlement1" parent="settlements" index="0" instance=ExtResource( 4 )]
 
 position = Vector2( 1190.8, 161.285 )
@@ -66,7 +64,7 @@ position = Vector2( 1303.61, 61.9814 )
 
 [node name="Settlement17" parent="settlements" index="3" instance=ExtResource( 4 )]
 
-position = Vector2( 1016.82, 259.794 )
+position = Vector2( 1018.18, 194.496 )
 
 [node name="Settlement2" parent="settlements" index="4" instance=ExtResource( 4 )]
 
@@ -74,7 +72,7 @@ position = Vector2( 70.845, 847.125 )
 
 [node name="Settlement3" parent="settlements" index="5" instance=ExtResource( 4 )]
 
-position = Vector2( 1319.23, 840.037 )
+position = Vector2( 1248.49, 863.163 )
 
 [node name="Settlement4" parent="settlements" index="6" instance=ExtResource( 4 )]
 
@@ -86,11 +84,11 @@ position = Vector2( 336.115, 96.7333 )
 
 [node name="Settlement18" parent="settlements" index="8" instance=ExtResource( 4 )]
 
-position = Vector2( 310.01, 269.994 )
+position = Vector2( 179.414, 133.957 )
 
 [node name="Settlement19" parent="settlements" index="9" instance=ExtResource( 4 )]
 
-position = Vector2( 1094.06, 803.575 )
+position = Vector2( 1065.49, 836.224 )
 
 [node name="Settlement20" parent="settlements" index="10" instance=ExtResource( 4 )]
 
@@ -98,51 +96,99 @@ position = Vector2( 129.675, 236.628 )
 
 [node name="Settlement6" parent="settlements" index="11" instance=ExtResource( 4 )]
 
-position = Vector2( 715.139, 278.558 )
+position = Vector2( 724.662, 221.422 )
 
-[node name="Settlement7" parent="settlements" index="12" instance=ExtResource( 4 )]
+[node name="Settlement33" parent="settlements" index="12" instance=ExtResource( 4 )]
+
+position = Vector2( 1321.87, 747.887 )
+
+[node name="Settlement34" parent="settlements" index="13" instance=ExtResource( 4 )]
+
+position = Vector2( 792.68, 856.717 )
+
+[node name="Settlement35" parent="settlements" index="14" instance=ExtResource( 4 )]
+
+position = Vector2( 867.501, 259.513 )
+
+[node name="Settlement7" parent="settlements" index="15" instance=ExtResource( 4 )]
 
 position = Vector2( 621.611, 815.128 )
 
-[node name="Settlement21" parent="settlements" index="13" instance=ExtResource( 4 )]
+[node name="Settlement21" parent="settlements" index="16" instance=ExtResource( 4 )]
 
-position = Vector2( 356.652, 566.099 )
+position = Vector2( 300.877, 693.974 )
 
-[node name="Settlement22" parent="settlements" index="14" instance=ExtResource( 4 )]
+[node name="Settlement22" parent="settlements" index="17" instance=ExtResource( 4 )]
 
 position = Vector2( 211.272, 581.987 )
 
-[node name="Settlement23" parent="settlements" index="15" instance=ExtResource( 4 )]
+[node name="Settlement23" parent="settlements" index="18" instance=ExtResource( 4 )]
 
 position = Vector2( 77.0132, 566.893 )
 
-[node name="Settlement8" parent="settlements" index="16" instance=ExtResource( 4 )]
+[node name="Settlement8" parent="settlements" index="19" instance=ExtResource( 4 )]
 
-position = Vector2( 1265.14, 418.558 )
+position = Vector2( 1318.19, 422.639 )
 
-[node name="Settlement9" parent="settlements" index="17" instance=ExtResource( 4 )]
+[node name="Settlement9" parent="settlements" index="20" instance=ExtResource( 4 )]
 
-position = Vector2( 837.139, 724.558 )
+position = Vector2( 871.148, 759.928 )
 
-[node name="Settlement10" parent="settlements" index="18" instance=ExtResource( 4 )]
+[node name="Settlement28" parent="settlements" index="21" instance=ExtResource( 4 )]
+
+position = Vector2( 720.147, 679.666 )
+
+[node name="Settlement29" parent="settlements" index="22" instance=ExtResource( 4 )]
+
+position = Vector2( 1258.86, 279.716 )
+
+[node name="Settlement30" parent="settlements" index="23" instance=ExtResource( 4 )]
+
+position = Vector2( 101.176, 728.639 )
+
+[node name="Settlement31" parent="settlements" index="24" instance=ExtResource( 4 )]
+
+position = Vector2( 278.025, 825.226 )
+
+[node name="Settlement32" parent="settlements" index="25" instance=ExtResource( 4 )]
+
+position = Vector2( 492.964, 686.467 )
+
+[node name="Settlement10" parent="settlements" index="26" instance=ExtResource( 4 )]
 
 position = Vector2( 849.139, 116.558 )
 
-[node name="Settlement11" parent="settlements" index="19" instance=ExtResource( 4 )]
+[node name="Settlement11" parent="settlements" index="27" instance=ExtResource( 4 )]
 
-position = Vector2( 554.406, 543.961 )
+position = Vector2( 570.731, 588.853 )
 
-[node name="Settlement12" parent="settlements" index="20" instance=ExtResource( 4 )]
+[node name="Settlement12" parent="settlements" index="28" instance=ExtResource( 4 )]
 
-position = Vector2( 514.685, 332.643 )
+position = Vector2( 404.495, 237.417 )
 
-[node name="Settlement13" parent="settlements" index="21" instance=ExtResource( 4 )]
+[node name="Settlement13" parent="settlements" index="29" instance=ExtResource( 4 )]
 
-position = Vector2( 888.86, 552.699 )
+position = Vector2( 906.545, 643.844 )
 
-[node name="Settlement14" parent="settlements" index="22" instance=ExtResource( 4 )]
+[node name="Settlement14" parent="settlements" index="30" instance=ExtResource( 4 )]
 
-position = Vector2( 666.42, 91.1363 )
+position = Vector2( 651.687, 76.4034 )
+
+[node name="Settlement24" parent="settlements" index="31" instance=ExtResource( 4 )]
+
+position = Vector2( 1078.94, 61.6706 )
+
+[node name="Settlement25" parent="settlements" index="32" instance=ExtResource( 4 )]
+
+position = Vector2( 101.66, 371.061 )
+
+[node name="Settlement26" parent="settlements" index="33" instance=ExtResource( 4 )]
+
+position = Vector2( 1078.38, 711.039 )
+
+[node name="Settlement27" parent="settlements" index="34" instance=ExtResource( 4 )]
+
+position = Vector2( 537.508, 180.761 )
 
 [node name="Teams" type="Node" parent="." index="5"]
 

@@ -44,9 +44,11 @@ shape = SubResource( 1 )
 
 [node name="Flag" type="Node2D" parent="." index="1"]
 
+position = Vector2( -4.87079, -0.413084 )
+
 [node name="FlagPole" type="Polygon2D" parent="Flag" index="0"]
 
-polygon = PoolVector2Array( -1.18168, -19.1644, -1.52962, -34.7059, -0.48579, -34.7059, 0.210102, -18.9324 )
+polygon = PoolVector2Array( -1.18168, -19.1644, -3.05722, -36.899, -1.59906, -37.5586, 0.210102, -18.9324 )
 uv = PoolVector2Array(  )
 color = Color( 0, 0, 0, 1 )
 vertex_colors = PoolColorArray(  )
@@ -61,7 +63,7 @@ invert_border = 100.0
 
 [node name="FlagFabric" type="Polygon2D" parent="Flag" index="1"]
 
-polygon = PoolVector2Array( -0.253826, -34.9379, 2.87769, -34.358, 8.09687, -36.3297, 12.8521, -36.3297, 13.548, -27.5151, 9.25668, -28.6749, 3.80554, -25.7753, 0.210102, -27.3991 )
+polygon = PoolVector2Array( -1.59906, -37.3937, 3.01846, -36.0746, 8.04102, -38.383, 12.9016, -37.2288, 13.548, -27.5151, 9.25668, -28.6749, 4.07157, -26.099, -0.62695, -27.0059 )
 uv = PoolVector2Array(  )
 color = Color( 1, 1, 1, 1 )
 vertex_colors = PoolColorArray(  )
@@ -74,11 +76,19 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="MainShape" type="Polygon2D" parent="." index="2"]
+[node name="SettlementCollision" type="CollisionShape2D" parent="." index="2"]
 
-polygon = PoolVector2Array( -24, 6, -24, -27, -12.2313, -27.0332, -12.7557, -19.8654, 10.6485, -19.8603, 10.1462, -26.6835, 24, -27, 24, 6, 5.42928, 5.19183, 5.42928, -2.34699, 2.99367, -6.29037, -0.48579, -6.98627, -3.84926, -5.94243, -6.1689, -1.18717, -6.05292, 5.42379 )
+position = Vector2( -0.349648, 1.90735e-006 )
+shape = SubResource( 2 )
+
+[node name="MainShape" type="Node2D" parent="." index="3"]
+
+[node name="TownSymbol" type="Polygon2D" parent="MainShape" index="0"]
+
+visible = false
+polygon = PoolVector2Array( -24, 6, -24, -27, -12.2313, -27.0332, -12.3851, -20.8845, 10.21, -21.1599, 10.1462, -26.6835, 24, -27, 24, 6, 5.42928, 5.19183, 5.42928, -2.34699, 2.99367, -6.29037, -0.48579, -6.98627, -3.84926, -5.94243, -6.1689, -1.18717, -6.05292, 5.42379 )
 uv = PoolVector2Array(  )
-color = Color( 0.394531, 0.394531, 0.394531, 1 )
+color = Color( 0.535156, 0.535156, 0.535156, 1 )
 vertex_colors = PoolColorArray(  )
 offset = Vector2( 0, 0 )
 antialiased = false
@@ -89,10 +99,20 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="SettlementCollision" type="CollisionShape2D" parent="." index="3"]
+[node name="SettlementSymbol" type="Polygon2D" parent="MainShape" index="1"]
 
-position = Vector2( -0.349648, 1.90735e-006 )
-shape = SubResource( 2 )
+polygon = PoolVector2Array( -10.0653, 4.2964, -5.66537, -9.0782, 6.08536, -9.0782, 8.97818, 4.2964, 23.2608, 4.2964, 23.2608, -19.9292, -0.543548, -24.7744, -19.587, -19.9292, -19.587, 4.2964 )
+uv = PoolVector2Array(  )
+color = Color( 0.464844, 0.421917, 0.141632, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
 
 [node name="Inventory" type="Node2D" parent="." index="4"]
 
@@ -101,7 +121,7 @@ position = Vector2( 0.263519, 2.10815 )
 [node name="InventorySlot5" type="Polygon2D" parent="Inventory" index="0"]
 
 position = Vector2( 2.73648, -14.1082 )
-polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+polygon = PoolVector2Array( -3.54355, 1.76107, 1.21732, 1.76107, 1.21732, -3.08406, -3.54355, -3.08406 )
 uv = PoolVector2Array(  )
 color = Color( 0.996094, 0.98053, 0, 1 )
 vertex_colors = PoolColorArray(  )
@@ -117,7 +137,7 @@ invert_border = 100.0
 [node name="InventorySlot6" type="Polygon2D" parent="Inventory" index="1"]
 
 position = Vector2( 11.7365, -14.1082 )
-polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+polygon = PoolVector2Array( -3.02184, 1.76107, 1.73902, 1.76107, 1.73902, -3.08406, -3.02184, -3.08406 )
 uv = PoolVector2Array(  )
 color = Color( 0.996094, 0.98053, 0, 1 )
 vertex_colors = PoolColorArray(  )
@@ -133,7 +153,7 @@ invert_border = 100.0
 [node name="InventorySlot7" type="Polygon2D" parent="Inventory" index="2"]
 
 position = Vector2( -6.26352, -14.1082 )
-polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+polygon = PoolVector2Array( -4.06527, 1.76107, 0.695591, 1.76107, 0.695591, -3.08406, -4.06527, -3.08406 )
 uv = PoolVector2Array(  )
 color = Color( 0.996094, 0.98053, 0, 1 )
 vertex_colors = PoolColorArray(  )
@@ -148,8 +168,8 @@ invert_border = 100.0
 
 [node name="InventorySlot8" type="Polygon2D" parent="Inventory" index="3"]
 
-position = Vector2( 20.7365, -14.1082 )
-polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+position = Vector2( -0.807067, -17.1923 )
+polygon = PoolVector2Array( -4.76086, 0, 0, 0, 0, -4.84513, -4.76086, -4.84513 )
 uv = PoolVector2Array(  )
 color = Color( 0.996094, 0.98053, 0, 1 )
 vertex_colors = PoolColorArray(  )
@@ -164,8 +184,8 @@ invert_border = 100.0
 
 [node name="InventorySlot9" type="Polygon2D" parent="Inventory" index="4"]
 
-position = Vector2( -15.2635, -14.1082 )
-polygon = PoolVector2Array( -6, 0, 0, 0, 0, -6, -6, -6 )
+position = Vector2( 3.9538, -17.1923 )
+polygon = PoolVector2Array( 0, 9.53674e-007, 4.76086, 9.53674e-007, 4.76086, -4.84512, 0, -4.84512 )
 uv = PoolVector2Array(  )
 color = Color( 0.996094, 0.98053, 0, 1 )
 vertex_colors = PoolColorArray(  )
