@@ -8,7 +8,7 @@ var team_score=0
 var team_color
 var leading_teammate
 var owned_settlement=[]
-const teamsize=7
+const teamsize=15
 
 func _ready():
 	# initiate players (position, color, resources)
@@ -68,15 +68,23 @@ func modify_team_score(delta):
 	
 func ask_for_order(teammember):
 	prints("Asked for order")
+	if get_owned_settlement_count()==0 :
+		teammember.start_search_for_settlement()
+		return
+		
 	if get_total_resources()<5:
 		teammember.start_collect_ressources()
 		return
+
+	if (get_resource_collector_count()<= get_member_count()/2 +1
+	 	and get_resource_collector_count()<= get_owned_settlement_count()/3+1):
+		teammember.start_collect_ressources()
 
 	if get_owned_settlement_count()<5:
 		teammember.start_search_for_settlement()
 		return
 	
-	if amount_missing(Global.get_price_for_town())<=0:
+	if amount_missing(Global.get_price_for_town())<=0 and get_number_of_buying_members()<3:
 		for s in range(0,owned_settlement.size()):
 			if !owned_settlement[s].is_town():
 				teammember.start_buy_town_extention(owned_settlement[s])
@@ -88,7 +96,11 @@ func ask_for_order(teammember):
 func has_interest_on_settlement(target_settlement,initiating_teammate):
 	if(target_settlement.get_owner_team()!=null):
 		return false
+	if get_number_of_buying_members()>3:
+		return false
 	if amount_missing(target_settlement.settlement_price)>0:
+		return false
+	if target_settlement.get_settlement_price_count()-3>get_owned_settlement_count():
 		return false
 	leading_teammate=initiating_teammate
 	return true
@@ -145,3 +157,9 @@ func get_resource_collector_count():
 			collector_count+=1
 	return collector_count
 
+func get_number_of_buying_members():
+	var buyer_count=0
+	for p in range(0,$Teammates.get_child_count()):
+		if $Teammates.get_child(p).is_trying_to_buy():
+			buyer_count+=1
+	return buyer_count

@@ -10,7 +10,7 @@ radius = 92.8727
 [sub_resource type="CircleShape2D" id=2]
 
 custom_solver_bias = 0.0
-radius = 10.0348
+radius = 2.36741
 
 [node name="Player" type="KinematicBody2D" index="0"]
 
@@ -40,7 +40,7 @@ shape = SubResource( 1 )
 
 modulate = Color( 0.273645, 0.100891, 0.890625, 1 )
 use_parent_material = true
-position = Vector2( 1.45152, -5.28841 )
+position = Vector2( -0.145671, 0.822573 )
 shape = SubResource( 2 )
 _sections_unfolded = [ "Material", "Transform", "Visibility" ]
 

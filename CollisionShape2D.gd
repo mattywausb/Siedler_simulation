@@ -5,7 +5,7 @@ extends StaticBody2D
 # var b = "textvar"
 var exchange_partner=null
 var my_index=-1
-var current_sun_points=1  #inital sun point you get, when buying the settlement
+var current_sun_points=2  #inital sun point you get, when buying the settlement
 var owner_team
 var settlement_price=[0,0,0,0,0]
 var settlement_ressource=-1
@@ -43,7 +43,10 @@ func set_settlement_price(distance_to_station):
 	var total_ressource_count=int(max(0,500-distance_to_station)/40)+2
 #	prints("Totel ressources",total_ressource_count)
 	for i in range(0,total_ressource_count):
-		settlement_price[randi()%settlement_price.size()]+=1
+		var r=randi()%settlement_price.size()
+		while r==settlement_ressource:
+			r=randi()%settlement_price.size()
+		settlement_price[r]+=1
 	update_inventory_display()
 
 func update_inventory_display():
@@ -116,6 +119,12 @@ func set_owner_team(team):
 	else:
 		return false
 
+func get_settlement_price_count():
+	var total_count=0
+	for r in range(0,settlement_price.size()):
+		total_count+=settlement_price[r]
+	return total_count
+	
 func get_owner_team():
 	return owner_team
 
