@@ -41,6 +41,7 @@ var sidestep_minimal_distance=10
 var remaining_pause_time =0
 var settlement_candidate  #settlement, that has been found
 
+const zero_price=[0,0,0,0,0]
 
 enum {ST_BUY_SETTLEMENT,ST_BUY_EXTENTION,
 	ST_GATHER_INFORMATION,ST_GATHER_RESOURCES}
@@ -343,6 +344,21 @@ func choose_task():
 			for r in range (0,strategic_target_price.size()):
 				strategic_target_price[r]=0
 			update_inventory_display()
+			
+	if strategic_target==ST_BUY_EXTENTION:
+		if amount_missing(strategic_target_price)==0:  # yes
+			manage_PT_BUY_EXTENTION(PE_IDLE)
+			return
+			
+		if my_team.amount_missing(strategic_target_price)==0:
+			manage_PT_EXCHANGE_WITH_TEAMMATE(PE_IDLE)
+			return
+		else:
+			strategic_target=ST_GATHER_RESOURCES
+			strategic_target_settlement=null
+			set_strategic_target_price(zero_price)
+
+		
 	
 	# should go to warehouse urgent
 	if get_sunpoint_sum()>=3:
@@ -494,7 +510,7 @@ func manage_PT_EXCHANGE_WITH_SETTLEMENT(event):
 		target_of_operation.disconnect_exchange_partner(self)
 		if target_of_operation==strategic_target_settlement:
 			strategic_target_settlement=null
-		choose_task()
+		my_team.ask_for_order(self)
 		return
 		
 func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
@@ -534,7 +550,7 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 		target_of_operation.disconnect_exchange_partner(self)
 		strategic_target=ST_GATHER_INFORMATION
 		last_player_exchanged_with=null
-		choose_task()
+		my_team.ask_for_order(self)
 		return
 
 func manage_PT_BUY_BUILDING(event):
@@ -576,13 +592,32 @@ func manage_PT_BUY_BUILDING(event):
 				enter_PO_GOTO_TARGET(strategic_target_settlement)			
 			else:
 				strategic_target=ST_GATHER_INFORMATION
-				choose_task()
+				my_team.ask_for_order(self)
 		else:
 			target_of_operation.disconnect_exchange_partner(self)
-			strategic_target_settlement=null
-			strategic_target=ST_GATHER_INFORMATION
-			choose_task()
+			my_team.ask_for_order(self)
 			return
+
+func start_collect_ressources():
+	strategic_target_settlement=null
+	strategic_target=ST_GATHER_RESOURCES
+	set_strategic_target_price(zero_price)
+	choose_task()
+	
+func start_search_for_settlement():
+	strategic_target=ST_GATHER_INFORMATION
+	strategic_target_settlement=null
+	set_strategic_target_price(zero_price)
+	choose_task()
+	
+func start_buy_town_extention(target_settlement):
+	strategic_target=ST_BUY_EXTENTION
+	strategic_target_settlement=null
+	strategic_target_asset=SA_TOWN
+	strategic_target_settlement=target_settlement
+	set_strategic_target_price(Global.get_price_for_town())
+	choose_task()
+	
 
 func determine_best_change_partner():
 	var best_teammate
@@ -658,3 +693,4 @@ func amount_missing(target_price):
 
 func is_gathering_resources():
 	return (strategic_target==ST_GATHER_RESOURCES)
+

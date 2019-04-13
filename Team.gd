@@ -23,6 +23,14 @@ func _ready():
 			team_index=i
 	$Scoreboard.set_position(Vector2(team_index*200,10))
 	get_node("Scoreboard/ScoreDisplay").set_text("%03d"%team_score)
+	
+###### Presentation
+
+#func _process(delta):
+#	# Called every frame. Delta is time since last frame.
+#	# Update game logic here.
+#	pass
+
 
 func set_teamColor(color):
 	team_color=color
@@ -38,17 +46,28 @@ func modify_team_score(delta):
 	if team_score<0:
 		team_score=0
 	get_node("Scoreboard/ScoreDisplay").set_text("%03d" % team_score)
+
+
+###### Functions for team decisions
 	
-func amount_missing(target_price):
-	var deviation=0
-	var team_resources=summarize_team_resources()
-	prints("checking_price",target_price)
-	for i in range(0,team_resources.size()):
-		if team_resources[i]<target_price[i]:
-			deviation+=target_price[i]-team_resources[i]
-	return deviation 
-		
+func ask_for_order(teammember):
+	if get_total_resources()<5:
+		teammember.start_collect_ressources()
+		return
+
+	if get_owned_settlement_count()<5:
+		teammember.start_search_for_settlement()
+		return
 	
+	if amount_missing(Global.get_price_for_town())<=0:
+		for s in range(0,owned_settlement.size()):
+			if !owned_settlement[s].is_town():
+				teammember.start_buy_town_extention(owned_settlement[s])
+				return
+				
+	teammember.start_search_for_settlement()
+	
+
 func has_interest_on_settlement(target_settlement,initiating_teammate):
 	if(target_settlement.get_owner_team()!=null):
 		return false
@@ -59,6 +78,17 @@ func has_interest_on_settlement(target_settlement,initiating_teammate):
 	
 func cancel_plan():
 	leading_teammate=null
+
+
+###### simple operations and informatiosn
+func amount_missing(target_price):
+	var deviation=0
+	var team_resources=summarize_team_resources()
+	prints("checking_price",target_price)
+	for i in range(0,team_resources.size()):
+		if team_resources[i]<target_price[i]:
+			deviation+=target_price[i]-team_resources[i]
+	return deviation 
 	
 func take_posession(settlement):
 	if owned_settlement.has(settlement):
@@ -91,8 +121,4 @@ func get_resource_collector_count():
 		if $Teammates.get_child(p).is_gathering_resources():
 			collector_count+=1
 	return collector_count
-#func _process(delta):
-#	# Called every frame. Delta is time since last frame.
-#	# Update game logic here.
-#	pass
 
