@@ -5,7 +5,7 @@ extends StaticBody2D
 # var b = "textvar"
 var exchange_partner=null
 var my_index=-1
-var current_sun_points=2  #inital sun point you get, when buying the settlement
+var current_sun_points=1  #inital sun point you get, when buying the settlement
 var owner_team
 var settlement_price=[0,0,0,0,0]
 var settlement_ressource=-1

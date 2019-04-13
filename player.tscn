@@ -688,6 +688,7 @@ invert_border = 100.0
 
 [node name="SIDESTEP" type="Polygon2D" parent="OperationIndicators" index="2"]
 
+visible = false
 position = Vector2( -1, 0 )
 scale = Vector2( 0.912471, 1 )
 polygon = PoolVector2Array( -1.59412, -33.5724, -4.38943, -29.6596, -1.38714, -31.7379, 1.40825, -29.2817, 3.89288, -31.0766, 6.89534, -29.8485, 4.0613, -33.4383, 1.30472, -29.5651 )
@@ -721,12 +722,29 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="GO_POSITION" type="Polygon2D" parent="OperationIndicators" index="4"]
+[node name="EXCHANGE_MASTER" type="Polygon2D" parent="OperationIndicators" index="4"]
 
 visible = false
 position = Vector2( -1, 0 )
 scale = Vector2( 0.912471, 1 )
-polygon = PoolVector2Array( 1.09767, -33.0604, 0.890603, -30.1319, -0.0411655, -33.0604, -4.83583, -32.2225, -6.01064, -30.589, -0.558819, -31.7379, 0.0312453, -27.9346, 1.59766, -27.8836, 2.44355, -31.36, 6.35285, -31.1506, 8.47869, -30.4869, 6.57662, -32.5799 )
+polygon = PoolVector2Array( -1.57171, -30.2908, -2.74947, -33.9673, -3.98921, -33.8542, -3.18338, -28.9899, 1.15573, -27.8021, 5.80478, -28.8202, 6.36267, -33.9108, 4.93696, -33.7411, 3.94516, -29.7818, 1.34169, -29.103 )
+uv = PoolVector2Array(  )
+color = Color( 0.0585938, 0.0141907, 0.0141907, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="EXCHANGE_CLIENT" type="Polygon2D" parent="OperationIndicators" index="5"]
+
+position = Vector2( -1, 0 )
+scale = Vector2( 0.912471, 1 )
+polygon = PoolVector2Array( 0.163935, -35.1551, -0.0220277, -32.1573, -3.18338, -31.9311, 1.15573, -28.3677, 5.06093, -31.8745, 2.33349, -32.0442, 2.33349, -35.0985 )
 uv = PoolVector2Array(  )
 color = Color( 0.0585938, 0.0141907, 0.0141907, 1 )
 vertex_colors = PoolColorArray(  )
@@ -867,8 +885,7 @@ invert_border = 100.0
 
 [node name="ST_BUY_SETTLEMENT" type="Polygon2D" parent="StrategyIndicators" index="1"]
 
-visible = false
-polygon = PoolVector2Array( -2, -5, 2, -5, 1, -2, 4, 0, 3, 4, 0, 5, -3, 4, -4, 0, -1, -2 )
+polygon = PoolVector2Array( 0.0685883, -4.13371, 4.09628, -5.80034, 4.30461, -0.731003, -0.152798, -0.0968285, -2.15359, -1.07822, -2.0147, 5.37998, -3.26468, 5.37998, -2.91746, -5.38368 )
 uv = PoolVector2Array(  )
 color = Color( 0, 0.211456, 0.660156, 1 )
 vertex_colors = PoolColorArray(  )
@@ -883,7 +900,24 @@ invert_border = 100.0
 
 [node name="ST_GATHER_RESOURCES" type="Polygon2D" parent="StrategyIndicators" index="2"]
 
-polygon = PoolVector2Array( -3, -2, 3, -2, 3, -4, 5, -4, 5, 4, 0, 4, -5, 4, -5, -4, -3, -4 )
+visible = false
+polygon = PoolVector2Array( -1.73693, -5.86978, 2.15187, -6.00867, 1.24911, -2.81429, 4.09628, -0.66156, 4.09628, 4.06056, -0.0703011, 5.31053, -4.30632, 3.50502, -4.58409, -0.244904, -1.38972, -2.67541 )
+uv = PoolVector2Array(  )
+color = Color( 0, 0.211456, 0.660156, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="ST_BUY_EXTENTION" type="Polygon2D" parent="StrategyIndicators" index="3"]
+
+visible = false
+polygon = PoolVector2Array( 0.265896, -3.13237, 3.95739, 0.796741, 0.693573, 0.31064, 4.02684, 4.96332, 0.138031, 3.22725, -4.65353, 4.96332, -0.348072, 0.31064, -3.88966, 0.866184 )
 uv = PoolVector2Array(  )
 color = Color( 0, 0.211456, 0.660156, 1 )
 vertex_colors = PoolColorArray(  )

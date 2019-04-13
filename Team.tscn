@@ -1,43 +1,12 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
 [ext_resource path="res://Team.gd" type="Script" id=1]
-[ext_resource path="res://player.tscn" type="PackedScene" id=2]
 
 [node name="Team" type="Node"]
 
 script = ExtResource( 1 )
 
 [node name="Teammates" type="Node" parent="." index="0"]
-
-[node name="Mate1" parent="Teammates" index="0" instance=ExtResource( 2 )]
-
-position = Vector2( -26.4776, -32.962 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="Mate2" parent="Teammates" index="1" instance=ExtResource( 2 )]
-
-position = Vector2( -76.7311, -34.0427 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="Mate3" parent="Teammates" index="2" instance=ExtResource( 2 )]
-
-position = Vector2( 24.9381, -32.2822 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="Mate4" parent="Teammates" index="3" instance=ExtResource( 2 )]
-
-position = Vector2( 71.5916, -30.5217 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="Mate5" parent="Teammates" index="4" instance=ExtResource( 2 )]
-
-position = Vector2( -23.9159, 32.8565 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="Mate6" parent="Teammates" index="5" instance=ExtResource( 2 )]
-
-position = Vector2( -71.4496, 30.6559 )
-_sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="Scoreboard" type="Node2D" parent="." index="1"]
 
