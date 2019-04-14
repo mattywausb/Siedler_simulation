@@ -8,7 +8,7 @@ var team_score=0
 var team_color
 var leading_teammate
 var owned_settlement=[]
-const teamsize=15
+const teamsize=7
 
 func _ready():
 	# initiate players (position, color, resources)
@@ -21,7 +21,8 @@ func _ready():
 		var x=randi()%(int(get_viewport().size.x/8))-get_viewport().size.x/16+get_viewport().size.x/2
 		var y=randi()%(int(get_viewport().size.y/8))-get_viewport().size.y/16+get_viewport().size.y/2
 		new_teammate.set_position(Vector2(x,y))
-		new_teammate.modify_inventory_slot(i%5,1)
+		if i==0:
+			new_teammate.modify_inventory_add([1,1,1,1,1])
 		print("Place player to " ,x,",",y)
 		$Teammates.add_child(new_teammate)
 	for i in range(0,get_parent().get_child_count()):
@@ -72,19 +73,26 @@ func ask_for_order(teammember):
 		teammember.start_search_for_settlement()
 		return
 		
-	if get_total_resources()<5:
+	if get_resource_count()<5:
 		teammember.start_collect_ressources()
 		return
 
-	if (get_resource_collector_count()<= get_member_count()/2 +1
-	 	and get_resource_collector_count()<= get_owned_settlement_count()/3+1):
-		teammember.start_collect_ressources()
+	if get_number_of_buying_members()>get_member_count()/2:
+		if (get_resource_collector_count()<= get_member_count()/2 +1
+		 	and get_resource_collector_count()<= get_owned_settlement_count()/3+1):
+			teammember.start_collect_ressources()
+		else:
+			teammember.start_search_for_settlement()
 
-	if get_owned_settlement_count()<5:
-		teammember.start_search_for_settlement()
-		return
+	# check if we can build an extention
+	for extention_name in owned_settlement[0].get_extention_name_list():
+		if amount_missing(owned_settlement[0].get_extention_price(extention_name))<=0:
+			for s in range(0,owned_settlement.size()):
+				if owned_settlement[s].is_extention_buildable(extention_name):
+					teammember.start_buy_extention(extention_name,owned_settlement[s])
+					return
 	
-	if amount_missing(Global.get_price_for_town())<=0 and get_number_of_buying_members()<3:
+	if amount_missing(Global.get_price_for_town())<=0:
 		for s in range(0,owned_settlement.size()):
 			if !owned_settlement[s].is_town():
 				teammember.start_buy_town_extention(owned_settlement[s])
@@ -94,13 +102,13 @@ func ask_for_order(teammember):
 	
 
 func has_interest_on_settlement(target_settlement,initiating_teammate):
-	if(target_settlement.get_owner_team()!=null):
+	if(target_settlement.get_owner_team()!=null): # already owned
 		return false
-	if get_number_of_buying_members()>3:
+	if get_number_of_buying_members()>get_member_count()/2:	# team already occupied
 		return false
-	if amount_missing(target_settlement.settlement_price)>0:
+	if amount_missing(target_settlement.settlement_price)>0: # cant afford
 		return false
-	if target_settlement.get_settlement_price_count()-3>get_owned_settlement_count():
+	if target_settlement.get_settlement_price_count()-1>(get_resource_count()/2):
 		return false
 	leading_teammate=initiating_teammate
 	return true
@@ -135,7 +143,7 @@ func summarize_team_resources():
 	prints("Team has:",team_resources)
 	return team_resources
 
-func get_total_resources():
+func get_resource_count():
 	var total_resources=0
 	for p in range(0,$Teammates.get_child_count()):
 		total_resources+=$Teammates.get_child(p).get_resource_count()

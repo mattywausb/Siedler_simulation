@@ -13,15 +13,16 @@ const player_stroll_speed=60
 enum {BRICK,IRON,WOOL,WEED,WOOD}
 	
 var ressource_inventory=[0,0,0,0,0]
+#var ressource_inventory=[2,2,2,2,2]  # DEBUG VERSION
 var sunpoint_inventory=[0,0,0,0,0]
 var my_team
 
 var strategic_target_price=[0,0,0,0,0]
 var strategic_target=ST_GATHER_INFORMATION
 var strategic_target_settlement
-var strategic_target_asset=SA_SETTLEMENT
+var strategic_target_asset="SETTLEMENT"
 
-enum {SA_SETTLEMENT,SA_TOWN}
+
 
 var last_settlement_seen
 var last_player_exchanged_with
@@ -139,7 +140,7 @@ func modify_inventory_subtract(delta_array):
 	update_inventory_display()
 
 func update_inventory_display():
-	var inventory_display=get_node("Inventory")
+	var inventory_display=get_node("LowerInventory")
 	# color resources
 	for i in range (0,inventory_display.get_child_count()):
 		if ressource_inventory[i%5]>=int(i/5)+1:
@@ -157,7 +158,7 @@ func update_inventory_display():
 		else:
 			inventory_display.get_child(i).visible=false
 	# color target price
-	inventory_display=get_node("TargetPrice")
+	inventory_display=get_node("UpperInventory")
 	for i in range (0,inventory_display.get_child_count()):
 		if strategic_target_price[i%5]>=int(i/5)+1:
 			inventory_display.get_child(i).visible=true
@@ -286,7 +287,8 @@ func enter_PO_EXCHANGE_CLIENT(partner):
 	if(player_operation!=PO_EXCHANGE_CLIENT 
 		and player_operation!=PO_EXCHANGE_MASTER 
 		and player_operation!=PO_EXCHANGE_WITH_STATION
-		and player_task!=PT_BUY_BUILDING ):
+		and player_task!=PT_BUY_BUILDING 
+		and player_task!=PT_BUY_EXTENTION):
 				player_operation=PO_EXCHANGE_CLIENT
 				target_of_operation=partner
 				last_player_exchanged_with=partner
@@ -503,7 +505,7 @@ func manage_PT_EXCHANGE_WITH_SETTLEMENT(event):
 			print_trace_event(event)
 			last_settlement_seen=target_of_operation
 			if target_of_operation.get_sun_point_sum()>0:
-				if enter_PO_EXCHANGE_WITH_STATION(2):
+				if enter_PO_EXCHANGE_WITH_STATION(3):
 					return
 			my_team.ask_for_order(self)
 	
@@ -537,7 +539,7 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 		
 	if event==PE_TARGET_MET:
 		print_trace_event(event)
-		if enter_PO_EXCHANGE_WITH_STATION(7):
+		if enter_PO_EXCHANGE_WITH_STATION(3):
 			return
 		else:
 			enter_PO_PAUSE(2)
@@ -573,7 +575,7 @@ func manage_PT_BUY_BUILDING(event):
 		if(strategic_target_settlement.get_owner_team()): # already bought
 			my_team.ask_for_order(self)
 			return
-		if enter_PO_EXCHANGE_WITH_STATION(4):
+		if enter_PO_EXCHANGE_WITH_STATION(6):
 			return
 		else:
 			enter_PO_GO_RANDOM_POSITION(200)
@@ -607,51 +609,50 @@ func manage_PT_BUY_BUILDING(event):
 			return
 
 func manage_PT_BUY_EXTENTION(event):
-	if event==PE_IDLE :
-		player_task=PT_BUY_EXTENTION
-		print_trace_event(event)
-		task_target_object=get_node("/root/Spiel/Townhall")
-		enter_PO_GOTO_TARGET(task_target_object)
-		return
+	match event:
+		PE_IDLE :
+			player_task=PT_BUY_EXTENTION
+			print_trace_event(event)
+			task_target_object=get_node("/root/Spiel/Townhall")
+			enter_PO_GOTO_TARGET(task_target_object)
 		
-	if event==PE_TARGET_MET:
-		print_trace_event(event)
-		if task_target_object==strategic_target_settlement: #final touch of settlement
-			my_team.ask_for_order(self)
-			return
-		# we are at the townhall, so what should we buy
-		match strategic_target_asset:
-			SA_TOWN:
-				if strategic_target_settlement.is_town():
-					my_team.ask_for_order(self) 
-					return
-				if !enter_PO_EXCHANGE_WITH_STATION(4):
-					enter_PO_GO_RANDOM_POSITION(200)
+		PE_TARGET_MET:
+			print_trace_event(event)
+			if task_target_object==strategic_target_settlement: #final touch of settlement
+				my_team.ask_for_order(self)
 				return
-		return
+				
+			# we are at the townhall, so what should we buy
+			if !strategic_target_settlement.is_extention_buildable(strategic_target_asset):
+				my_team.ask_for_order(self) 
+				return
+				
+			if !enter_PO_EXCHANGE_WITH_STATION(3):  # start trade with townhall
+				enter_PO_GO_RANDOM_POSITION(200)
 
-	if event==PE_REACHED_POSITION:
-		enter_PO_PAUSE(2)
-		
-	if event==PE_TIMER_TIMEOUT:
-		print_trace_event(event)
-		enter_PO_GOTO_TARGET(task_target_object)
-		return
-		
-	if event==PE_EXCHANGE_COMPLETE:
-		if(task_target_object==get_node("/root/Spiel/Townhall")): 
+		PE_REACHED_POSITION:
+			enter_PO_PAUSE(2)
+			
+		PE_TIMER_TIMEOUT:
 			print_trace_event(event)
-			target_of_operation.disconnect_exchange_partner(self)
-			strategic_target_settlement.upgrade_to_town()
-			modify_inventory_subtract(strategic_target_price)
-			my_team.modify_team_score(1)
-			set_strategic_target_price(zero_price)
-			enter_PO_GOTO_TARGET(strategic_target_settlement)
-		else:
-			print_trace_event(event)
-			target_of_operation.disconnect_exchange_partner(self)
-			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_IDLE)
-			return
+			enter_PO_GOTO_TARGET(task_target_object)
+
+		PE_EXCHANGE_COMPLETE:
+			if(task_target_object==get_node("/root/Spiel/Townhall")): 
+				print_trace_event(event)
+				target_of_operation.disconnect_exchange_partner(self)
+				strategic_target_settlement.build_extention(strategic_target_asset)
+				modify_inventory_subtract(strategic_target_price)
+				my_team.modify_team_score(1)
+				set_strategic_target_price(zero_price)
+				strategic_target_asset=null
+				task_target_object=strategic_target_settlement
+				enter_PO_GOTO_TARGET(strategic_target_settlement)
+			else:
+				print_trace_event(event)
+				target_of_operation.disconnect_exchange_partner(self)
+				my_team.ask_for_order()
+
 
 
 func start_collect_ressources():
@@ -668,10 +669,18 @@ func start_search_for_settlement():
 	set_strategic_target_price(zero_price)
 	choose_task()
 	
+func start_buy_extention(extention_name,target_settlement):
+	print_trace_with_note("start_buy_extention "+extention_name)
+	strategic_target=ST_BUY_EXTENTION
+	strategic_target_asset=extention_name
+	strategic_target_settlement=target_settlement
+	set_strategic_target_price(target_settlement.get_extention_price(extention_name))
+	choose_task()	
+
 func start_buy_town_extention(target_settlement):
 	print_trace_with_note("start_buy_town_extention")
 	strategic_target=ST_BUY_EXTENTION
-	strategic_target_asset=SA_TOWN
+	strategic_target_asset="TOWN"
 	strategic_target_settlement=target_settlement
 	set_strategic_target_price(Global.get_price_for_town())
 	choose_task()

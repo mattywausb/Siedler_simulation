@@ -10,6 +10,7 @@ var owner_team
 var settlement_price=[0,0,0,0,0]
 var settlement_ressource=-1
 var is_town=false
+var extention_list={"NULL":true}
 
 const upgrade_price_town=[0,3,0,2,0]
 
@@ -20,8 +21,22 @@ const inventory_color=[	"cb0b0b", # 1 = brick
 					"25cb17"] # 6 = green
 
 const sunpoint_color="f0f000"
+const school_color="8000A0"
+const university_color="a000f0"
+const tower_color="040404"
+
+
 
 enum {BRICK,IRON,WOOL,WEED,WOOD}
+
+enum {TOWER=10, SCHOOL, UNIVERSIY, CHAPEL, MONASTERY, CHURCH, MARKET, STOCK_MARKET}
+
+
+const extention_catalog= {
+		 TOWER={price=[2,0,0,0,2],needs_town=false,needed_extention=null},
+		 SCHOOL={price=[1,2,1,0,0],needs_town=false,needed_extention=null},
+		 UNIVERSITY={price=[2,2,0,0,1],needs_town=true,needed_extention=SCHOOL} }
+
 
 func _ready():
 	$Flag.visible=false
@@ -34,13 +49,18 @@ func _process(delta):
 		get_node("MainShape").self_modulate=Color(1,0.2,0.2)
 	else:
 		get_node("MainShape").self_modulate=Color(1,1,1)
-	
+
 func set_settlement_ressource(r):
 	settlement_ressource=r
 	$Sign.color=Color(inventory_color[settlement_ressource])
-	
+
+const min_distance=138
+const max_distance=450
+const distance_range=max_distance-min_distance
+const distance_factor=(distance_range)/5
+
 func set_settlement_price(distance_to_station):
-	var total_ressource_count=int(max(0,500-distance_to_station)/40)+2
+	var total_ressource_count=int(max(0,distance_range-(distance_to_station-min_distance))/distance_factor)+3
 #	prints("Totel ressources",total_ressource_count)
 	for i in range(0,total_ressource_count):
 		var r=randi()%settlement_price.size()
@@ -57,11 +77,22 @@ func update_inventory_display():
 		if current_sun_points==1:
 			inventory_display.get_child(0).color=sunpoint_color
 			inventory_display.get_child(0).visible=true
-		elif current_sun_points==2:	
+		elif current_sun_points==2:
 			inventory_display.get_child(2).color=sunpoint_color
 			inventory_display.get_child(1).color=sunpoint_color
 			inventory_display.get_child(2).visible=true
 			inventory_display.get_child(1).visible=true
+		if extention_list.has("SCHOOL"):
+			inventory_display.get_child(6).color=school_color
+			inventory_display.get_child(6).visible=true
+		if extention_list.has("UNIVERSITY"):
+			inventory_display.get_child(6).color=university_color
+			inventory_display.get_child(6).visible=true
+		if extention_list.has("TOWER"):
+			inventory_display.get_child(8).color=tower_color
+			inventory_display.get_child(8).visible=true
+			
+			
 	else: # not taken yet
 		var slot_index=0
 		for r in range(0,settlement_price.size()):
@@ -94,13 +125,13 @@ func give_sun_points():
 func get_sun_point_sum():
 	return current_sun_points
 
-	
+
 func disconnect_exchange_partner(partner):
 	if partner==exchange_partner:
 		exchange_partner=null
 
 func _on_sun_point_trigger_timeout():
-		
+
 	if is_town:
 		current_sun_points = 2
 	else:
@@ -124,21 +155,52 @@ func get_settlement_price_count():
 	for r in range(0,settlement_price.size()):
 		total_count+=settlement_price[r]
 	return total_count
-	
+
 func get_owner_team():
 	return owner_team
 
 func get_settlement_price():
 	return settlement_price
-	
+
 func is_town():
 	return is_town
 
 func get_upgrade_price_town():
-	return upgrade_price_town	
+	return upgrade_price_town
 
 func upgrade_to_town():
 	is_town=true
 	update_inventory_display()
 
+func get_extention_price(extention_name):
+	return extention_catalog[extention_name].price
+	
+func get_extention_name_list():
+	return extention_catalog.keys()
+	
+func is_extention_buildable(extention_name):
+	if extention_name=="TOWN":
+		return !is_town()
+	if extention_list.has(extention_name):
+		return false
+	if extention_catalog[extention_name].needs_town and !is_town:
+		return false
+	if extention_catalog[extention_name].needed_extention:
+		if !extention_list.has(extention_catalog[extention_name].needed_extention):
+			return false
+	else:
+		if extention_list.size()>=2:
+			return false
+	return true
 
+func build_extention(extention_name):
+	if !is_extention_buildable(extention_name):
+		return false
+	if extention_name=="TOWN":
+		is_town=true
+	else:
+		if extention_catalog[extention_name].needed_extention!=null:
+			extention_list.erase(extention_catalog[extention_name].needed_extention)
+		extention_list[extention_name]=true
+	update_inventory_display()
+	

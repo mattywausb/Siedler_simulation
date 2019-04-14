@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://CollisionShape2D.gd" type="Script" id=1]
+[ext_resource path="res://Settlement.gd" type="Script" id=1]
 
 [sub_resource type="CircleShape2D" id=1]
 
@@ -12,7 +12,7 @@ radius = 21.9558
 custom_solver_bias = 0.0
 radius = 5.27125
 
-[node name="Settlement" type="StaticBody2D"]
+[node name="Settlement" type="StaticBody2D" index="0"]
 
 position = Vector2( 0.34251, 0.339762 )
 scale = Vector2( 0.630138, 0.619179 )
@@ -118,7 +118,7 @@ invert_border = 100.0
 
 position = Vector2( 0.263519, 2.10815 )
 
-[node name="InventorySlot5" type="Polygon2D" parent="Inventory" index="0"]
+[node name="InventorySlot0" type="Polygon2D" parent="Inventory" index="0"]
 
 position = Vector2( 2.73648, -14.1082 )
 polygon = PoolVector2Array( -3.54355, 1.76107, 1.21732, 1.76107, 1.21732, -3.08406, -3.54355, -3.08406 )
@@ -134,7 +134,7 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="InventorySlot6" type="Polygon2D" parent="Inventory" index="1"]
+[node name="InventorySlot1" type="Polygon2D" parent="Inventory" index="1"]
 
 position = Vector2( 11.7365, -14.1082 )
 polygon = PoolVector2Array( -3.02184, 1.76107, 1.73902, 1.76107, 1.73902, -3.08406, -3.02184, -3.08406 )
@@ -150,7 +150,7 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="InventorySlot7" type="Polygon2D" parent="Inventory" index="2"]
+[node name="InventorySlot2" type="Polygon2D" parent="Inventory" index="2"]
 
 position = Vector2( -6.26352, -14.1082 )
 polygon = PoolVector2Array( -4.06527, 1.76107, 0.695591, 1.76107, 0.695591, -3.08406, -4.06527, -3.08406 )
@@ -166,7 +166,7 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="InventorySlot8" type="Polygon2D" parent="Inventory" index="3"]
+[node name="InventorySlot3" type="Polygon2D" parent="Inventory" index="3"]
 
 position = Vector2( -0.807067, -17.1923 )
 polygon = PoolVector2Array( -4.76086, 0, 0, 0, 0, -4.84513, -4.76086, -4.84513 )
@@ -182,10 +182,74 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="InventorySlot9" type="Polygon2D" parent="Inventory" index="4"]
+[node name="InventorySlot4" type="Polygon2D" parent="Inventory" index="4"]
 
 position = Vector2( 3.9538, -17.1923 )
 polygon = PoolVector2Array( 0, 9.53674e-007, 4.76086, 9.53674e-007, 4.76086, -4.84512, 0, -4.84512 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot5" type="Polygon2D" parent="Inventory" index="5"]
+
+position = Vector2( 13.4755, -17.1923 )
+polygon = PoolVector2Array( 0, 9.53674e-007, 4.76086, 9.53674e-007, 4.76086, -4.84512, 0, -4.84512 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot6" type="Polygon2D" parent="Inventory" index="6"]
+
+position = Vector2( -15.0897, -17.1923 )
+polygon = PoolVector2Array( 0, 9.53674e-007, 4.76086, 9.53674e-007, 4.76086, -4.84512, 0, -4.84512 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot7" type="Polygon2D" parent="Inventory" index="7"]
+
+position = Vector2( -15.0897, -7.50201 )
+polygon = PoolVector2Array( 0, 0, 4.76086, 9.53674e-007, 4.76086, -4.84512, 0, -4.84512 )
+uv = PoolVector2Array(  )
+color = Color( 0.996094, 0.98053, 0, 1 )
+vertex_colors = PoolColorArray(  )
+offset = Vector2( 0, 0 )
+antialiased = false
+texture = null
+texture_offset = Vector2( 0, 0 )
+texture_scale = Vector2( 1, 1 )
+texture_rotation_degrees = 0.0
+invert_enable = false
+invert_border = 100.0
+
+[node name="InventorySlot8" type="Polygon2D" parent="Inventory" index="8"]
+
+position = Vector2( -15.0897, -0.266033 )
+polygon = PoolVector2Array( 0, 0, 4.76086, 9.53674e-007, 4.76086, -4.84512, 0, -4.84512 )
 uv = PoolVector2Array(  )
 color = Color( 0.996094, 0.98053, 0, 1 )
 vertex_colors = PoolColorArray(  )
