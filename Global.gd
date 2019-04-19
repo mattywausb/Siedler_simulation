@@ -1,5 +1,8 @@
 extends Node
 
+enum {TOWER=10, SCHOOL=20, UNIVERSITY, CHAPEL=30, MONASTERY, CHURCH, MARKET=40, STOCK_MARKET}
+
+
 var current_scene = null
 
 func _ready():

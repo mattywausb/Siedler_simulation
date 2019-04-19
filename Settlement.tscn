@@ -12,7 +12,7 @@ radius = 21.9558
 custom_solver_bias = 0.0
 radius = 5.27125
 
-[node name="Settlement" type="StaticBody2D" index="0"]
+[node name="Settlement" type="StaticBody2D"]
 
 position = Vector2( 0.34251, 0.339762 )
 scale = Vector2( 0.630138, 0.619179 )

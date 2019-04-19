@@ -1,5 +1,7 @@
 extends StaticBody2D
 
+
+
 # class member variables go here, for example:
 # var a = 2
 # var b = "textvar"
@@ -8,7 +10,7 @@ var my_index=-1
 var current_sun_points=2  #inital sun point you get, when buying the settlement
 var owner_team
 var settlement_price=[0,0,0,0,0]
-var settlement_ressource=-1
+var settlement_resource=-1
 var is_town=false
 var extention_list={"NULL":true}
 
@@ -29,7 +31,7 @@ const tower_color="040404"
 
 enum {BRICK,IRON,WOOL,WEED,WOOD}
 
-enum {TOWER=10, SCHOOL, UNIVERSIY, CHAPEL, MONASTERY, CHURCH, MARKET, STOCK_MARKET}
+enum {TOWER=10, SCHOOL=20, UNIVERSITY, CHAPEL=30, MONASTERY, CHURCH, MARKET=40, STOCK_MARKET}
 
 
 const extention_catalog= {
@@ -37,6 +39,7 @@ const extention_catalog= {
 		 SCHOOL={price=[1,2,1,0,0],needs_town=false,needed_extention=null},
 		 UNIVERSITY={price=[2,2,0,0,1],needs_town=true,needed_extention=SCHOOL} }
 
+# main functions and representations functions
 
 func _ready():
 	$Flag.visible=false
@@ -49,26 +52,7 @@ func _process(delta):
 		get_node("MainShape").self_modulate=Color(1,0.2,0.2)
 	else:
 		get_node("MainShape").self_modulate=Color(1,1,1)
-
-func set_settlement_ressource(r):
-	settlement_ressource=r
-	$Sign.color=Color(inventory_color[settlement_ressource])
-
-const min_distance=138
-const max_distance=450
-const distance_range=max_distance-min_distance
-const distance_factor=(distance_range)/5
-
-func set_settlement_price(distance_to_station):
-	var total_ressource_count=int(max(0,distance_range-(distance_to_station-min_distance))/distance_factor)+3
-#	prints("Totel ressources",total_ressource_count)
-	for i in range(0,total_ressource_count):
-		var r=randi()%settlement_price.size()
-		while r==settlement_ressource:
-			r=randi()%settlement_price.size()
-		settlement_price[r]+=1
-	update_inventory_display()
-
+		
 func update_inventory_display():
 	var inventory_display=get_node("Inventory")
 	if owner_team!=null:
@@ -106,29 +90,7 @@ func update_inventory_display():
 	$MainShape/TownSymbol.visible=is_town
 	$MainShape/SettlementSymbol.visible=!is_town
 
-func connect_exchange_partner(partner):
-	if exchange_partner:
-		return false
-	if owner_team and partner.get_team()!=owner_team:
-		return false
-	exchange_partner=partner
-	return true
-
-func give_sun_points():
-	var points=[0,0,0,0,0]
-	if current_sun_points>0:
-		points[settlement_ressource]=current_sun_points
-		current_sun_points=0
-		update_inventory_display()
-	return points
-
-func get_sun_point_sum():
-	return current_sun_points
-
-
-func disconnect_exchange_partner(partner):
-	if partner==exchange_partner:
-		exchange_partner=null
+#  Events 
 
 func _on_sun_point_trigger_timeout():
 
@@ -138,7 +100,18 @@ func _on_sun_point_trigger_timeout():
 		current_sun_points = 1
 
 	update_inventory_display()
+	
+# getter / Setter
 
+func get_extention_price(extention_name):
+	return extention_catalog[extention_name].price
+	
+func get_extention_name_list():
+	return extention_catalog.keys()
+
+func get_owner_team():
+	return owner_team
+	
 func set_owner_team(team):
 	if owner_team==null:
 		owner_team=team
@@ -150,34 +123,49 @@ func set_owner_team(team):
 	else:
 		return false
 
+
+
+func get_settlement_price():
+	return settlement_price
+
+
+const min_distance=138
+const max_distance=450
+const distance_range=max_distance-min_distance
+const distance_factor=(distance_range)/5
+
+func set_settlement_price(distance_to_station):
+	var total_ressource_count=int(max(0,distance_range-(distance_to_station-min_distance))/distance_factor)+3
+#	prints("Totel ressources",total_ressource_count)
+	for i in range(0,total_ressource_count):
+		var r=randi()%settlement_price.size()
+		while r==settlement_resource:
+			r=randi()%settlement_price.size()
+		settlement_price[r]+=1
+	update_inventory_display()
+
 func get_settlement_price_count():
 	var total_count=0
 	for r in range(0,settlement_price.size()):
 		total_count+=settlement_price[r]
 	return total_count
 
-func get_owner_team():
-	return owner_team
+func get_settlement_resource():
+	return settlement_resource
 
-func get_settlement_price():
-	return settlement_price
+func set_settlement_resource(r):
+	settlement_resource=r
+	$Sign.color=Color(inventory_color[settlement_resource])
 
-func is_town():
-	return is_town
-
+func get_sun_point_sum():
+	return current_sun_points
+	
 func get_upgrade_price_town():
 	return upgrade_price_town
+		
 
-func upgrade_to_town():
-	is_town=true
-	update_inventory_display()
+# evaluations
 
-func get_extention_price(extention_name):
-	return extention_catalog[extention_name].price
-	
-func get_extention_name_list():
-	return extention_catalog.keys()
-	
 func is_extention_buildable(extention_name):
 	if extention_name=="TOWN":
 		return !is_town()
@@ -193,6 +181,11 @@ func is_extention_buildable(extention_name):
 			return false
 	return true
 
+func is_town():
+	return is_town
+
+# Operations
+
 func build_extention(extention_name):
 	if !is_extention_buildable(extention_name):
 		return false
@@ -203,4 +196,27 @@ func build_extention(extention_name):
 			extention_list.erase(extention_catalog[extention_name].needed_extention)
 		extention_list[extention_name]=true
 	update_inventory_display()
-	
+
+func connect_exchange_partner(partner):
+	if exchange_partner:
+		return false
+	if owner_team and partner.get_team()!=owner_team:
+		return false
+	exchange_partner=partner
+	return true
+
+func disconnect_exchange_partner(partner):
+	if partner==exchange_partner:
+		exchange_partner=null
+		
+func give_sun_points():
+	var points=[0,0,0,0,0]
+	if current_sun_points>0:
+		points[settlement_resource]=current_sun_points
+		current_sun_points=0
+		update_inventory_display()
+	return points
+
+func upgrade_to_town():
+	is_town=true
+	update_inventory_display()

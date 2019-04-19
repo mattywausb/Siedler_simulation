@@ -16,7 +16,7 @@ func _ready():
 	var trace_low=10000
 	
 	for s in range (0,$settlements.get_child_count()):
-		$settlements.get_child(s).set_settlement_ressource(s%5)
+		$settlements.get_child(s).set_settlement_resource(s%5)
 		var lowest_distance=3000
 		for w in range(0,$Warehouses.get_child_count()):
 			var warehouse_distance=$settlements.get_child(s).get_global_position().distance_to($Warehouses.get_child(w).get_global_position())
