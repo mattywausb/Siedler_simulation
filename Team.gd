@@ -10,6 +10,7 @@ var team_score=0
 var team_color
 var leading_teammate
 var owned_settlement=[]
+var resource_needs=[0,0,0,0,0]
 
 
 
@@ -89,7 +90,7 @@ func add_mission(new_mission):
 	mission_sequence+=1
 	team_mission[mission_sequence]=new_mission
 	
-func ask_for_mission(teammember):
+func determine_mission(teammember):
 	prints(teammember,"- asked for mission")
 	cancel_old_mission(teammember)
 	
@@ -132,7 +133,7 @@ func cancel_old_mission(teammember):
 			mission.is_done_by=false
 			if mission.mission_type==MT_SETTLEMENT:
 				mission.mission_price=[0,0,0,0,0]
-	recalculate_resource_needs()
+	update_resource_needs()
 
 
 func complete_mission(completed_mission_id):
@@ -184,12 +185,13 @@ func has_interest_on_settlement(target_settlement,initiating_teammate):
 			if target_settlement.get_settlement_price_count()-1>(get_resource_count()/2):
 				continue
 			mission.is_done_by=initiating_teammate
+			mission.price=target_settlement.get_settlement_price()
+			update_resource_needs()
 			prints(initiating_teammate, "- gets ok to buy settlement")
 			return mission_id
 	return false
 
-func recalculate_resource_needs():
-	print("Recalculate needs ######### to be done #######")
+
 	return
 
 func take_posession(settlement,mission_id):
@@ -256,6 +258,21 @@ func get_resource_count():
 	for p in range(0,$Teammates.get_child_count()):
 		total_resources+=$Teammates.get_child(p).get_resource_count()
 	return total_resources
+
+func get_resource_need_score():
+	var need_score=get_team_resources()
+
+	for mission_id in team_mission:
+		var mission=team_mission[mission_id]
+		if mission.price:
+			var fac=0.25
+			if mission.is_done_by:
+				fac=0.5
+			for r in range (0,need_score):
+					need_score[r]+=mission.price[r]*fac
+	for r in range(0,need_score.size()):
+		need_score[r]=int(need_score[r])
+	
 
 func set_teamColor(color):
 	team_color=color
