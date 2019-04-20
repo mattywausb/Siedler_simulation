@@ -264,12 +264,12 @@ func process_operation(delta):
 func enter_PO_GOTO_TARGET(new_target):
 	target_of_operation=new_target
 	player_operation=PO_GOTO_TARGET
-	print_trace_with_target(target_of_operation)
+	#print_trace_with_target(target_of_operation)
 
 
 func enter_PO_PAUSE(waittime):
 	player_operation=PO_PAUSE
-	print_trace()
+	#print_trace()
 	get_node("Timer").set_wait_time(waittime)
 	get_node("Timer").start()
 	
@@ -277,7 +277,7 @@ func enter_PO_EXCHANGE_MASTER():
 	if target_of_operation.enter_PO_EXCHANGE_CLIENT(self):
 		player_operation=PO_EXCHANGE_MASTER
 		last_player_exchanged_with=target_of_operation
-		print_trace_with_target(target_of_operation)
+		#print_trace_with_target(target_of_operation)
 		get_node("Timer").set_wait_time(2)
 		get_node("Timer").start()
 		return true
@@ -295,7 +295,7 @@ func enter_PO_EXCHANGE_CLIENT(partner):
 				last_player_exchanged_with=partner
 				player_state=PS_NORMAL
 				player_task=PT_EXCHANGE_WITH_TEAMMATE
-				print_trace_with_target(target_of_operation)
+				#print_trace_with_target(target_of_operation)
 				get_node("Timer").set_wait_time(2.5)
 				get_node("Timer").start()
 				return true
@@ -305,7 +305,7 @@ func enter_PO_EXCHANGE_CLIENT(partner):
 func enter_PO_EXCHANGE_WITH_STATION(duration):
 	if target_of_operation.connect_exchange_partner(self):
 			player_operation=PO_EXCHANGE_WITH_STATION
-			print_trace_with_target(target_of_operation)
+			#print_trace_with_target(target_of_operation)
 			get_node("Timer").set_wait_time(duration)
 			get_node("Timer").start()
 			return true
@@ -315,7 +315,7 @@ func enter_PO_EXCHANGE_WITH_STATION(duration):
 
 func enter_PO_GO_RANDOM_POSITION(distance):
 	player_operation=PO_GO_RANDOM_POSITION
-	print_trace()
+	#print_trace()
 	var x=max(min(get_global_position().x+randi()%distance*2-distance,int(get_viewport().size.x-20)),20)
 	var y=max(min(get_global_position().y+randi()%distance*2-distance,int(get_viewport().size.y-20)),20)
 	target_of_operation=Vector2(x,y)
@@ -338,12 +338,12 @@ func _on_Timer_timeout():
 
 ########## implementation of complex tasks ############
 func choose_task():
-	print_trace_with_note("choosing next task for "+ST_str[strategic_target])
+	#print_trace_with_note("choosing next task for "+ST_str[strategic_target])
 	player_operation=PO_IDLE
 
 	if strategic_target==ST_BUY_SETTLEMENT:
 	# can we go, and buy the settlement ?
-		if amount_missing(strategic_target_price)==0:  # yes
+		if get_amount_missing(strategic_target_price)==0:  # yes
 			manage_PT_BUY_BUILDING(PE_IDLE)
 			return
 		
@@ -353,14 +353,14 @@ func choose_task():
 		else:
 			strategic_target=ST_GATHER_RESOURCES
 			strategic_target_settlement=null
-			my_team.cancel_mission(player_mission_id)
+			my_team.cancel_old_mission(self)
 			player_mission_id=false
 			for r in range (0,strategic_target_price.size()):
 				strategic_target_price[r]=0
 			update_inventory_display()
 			
 	if strategic_target==ST_BUY_EXTENTION:
-		if amount_missing(strategic_target_price)==0:  # we can afford it
+		if get_amount_missing(strategic_target_price)==0:  # we can afford it
 			manage_PT_BUY_EXTENTION(PE_IDLE)
 			return
 			
@@ -447,7 +447,7 @@ func manage_PT_STROLL_AROUND(event):
 		manage_PT_STROLL_AROUND(PE_IDLE)
 	
 	if event==PE_REACHED_POSITION:
-		print_trace_event(event)
+		#print_trace_event(event)
 		my_team.ask_for_mission(self)
 		return
 
@@ -462,7 +462,7 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 		return
 		
 	if event==PE_TARGET_MET:
-		print_trace_event(event)
+		#print_trace_event(event)
 		if enter_PO_EXCHANGE_MASTER(): # we have a conntection will trigger timer
 			
 			# get resoureces needed and available
@@ -471,13 +471,13 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 					var amount=0
 					if task_target_object.ressource_inventory[r]>task_target_object.strategic_target_price[r]:
 						amount=task_target_object.ressource_inventory[r]-task_target_object.strategic_target_price[r]
-					print_trace_with_note("Receiving ressource")
+					#print_trace_with_note("Receiving ressource")
 					task_target_object.modify_inventory_slot(r,-amount)
 					modify_inventory_slot(r,amount)
 					
 			# if only 1 resource is missing try to get it even partner needs it but is not finished
-			if (task_target_object.amount_missing(task_target_object.strategic_target_price)>0
-				and amount_missing(strategic_target_price)==1):
+			if (task_target_object.get_amount_missing(task_target_object.strategic_target_price)>0
+				and get_amount_missing(strategic_target_price)==1):
 					for r in range(0,ressource_inventory.size()):
 						if (ressource_inventory[r]<strategic_target_price[r] and
 							task_target_object.ressource_inventory[r]>0):
@@ -491,12 +491,12 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 		enter_PO_PAUSE(2)
 	
 	if event==PE_TIMER_TIMEOUT:
-		print_trace_event(event)
+		#print_trace_event(event)
 		enter_PO_GOTO_TARGET(task_target_object)
 		return
 		
 	if event==PE_EXCHANGE_COMPLETE:
-		print_trace_event(event)
+		#print_trace_event(event)
 		choose_task()
 		return
 	print(get_instance_id(),"- PT_EXCHANGE_WITH_TEAMMATE unhandled event",event)
@@ -509,7 +509,7 @@ func manage_PT_EXCHANGE_WITH_SETTLEMENT(event):
 			enter_PO_GOTO_TARGET(strategic_target_settlement)
 			
 		PE_TARGET_MET:
-			print_trace_event(event)
+			#print_trace_event(event)
 			last_settlement_seen=target_of_operation
 			if target_of_operation.get_sun_point_sum()>0:
 				if enter_PO_EXCHANGE_WITH_STATION(3):
@@ -517,11 +517,11 @@ func manage_PT_EXCHANGE_WITH_SETTLEMENT(event):
 			my_team.ask_for_mission(self)
 	
 		PE_TIMER_TIMEOUT:
-			print_trace_event(event)
+			#print_trace_event(event)
 			enter_PO_GOTO_TARGET(target_of_operation)
 			
 		PE_EXCHANGE_COMPLETE:
-			print_trace_event(event)
+			#print_trace_event(event)
 			modify_sunpoint_add(target_of_operation.give_sun_points())
 			target_of_operation.disconnect_exchange_partner(self)
 			if target_of_operation==strategic_target_settlement:
@@ -532,7 +532,7 @@ func manage_PT_EXCHANGE_WITH_SETTLEMENT(event):
 func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 	if event==PE_IDLE :
 		player_task=PT_EXCHANGE_WITH_WAREHOUSE
-		print_trace_event(event)
+		#print_trace_event(event)
 		var warehouse_list=get_node("/root/Spiel/Warehouses")
 		var best_distance=9999
 		var best_warehouse
@@ -545,7 +545,7 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 		return
 		
 	if event==PE_TARGET_MET:
-		print_trace_event(event)
+		#print_trace_event(event)
 		if enter_PO_EXCHANGE_WITH_STATION(3):
 			return
 		else:
@@ -553,12 +553,12 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 		return
 	
 	if event==PE_TIMER_TIMEOUT:
-		print_trace_event(event)
+		#print_trace_event(event)
 		enter_PO_GOTO_TARGET(target_of_operation)
 		return
 		
 	if event==PE_EXCHANGE_COMPLETE:
-		print_trace_event(event)
+		#print_trace_event(event)
 		for r in range (0,ressource_inventory.size()):
 			ressource_inventory[r]+=sunpoint_inventory[r]
 			sunpoint_inventory[r]=0
@@ -571,13 +571,13 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 func manage_PT_BUY_BUILDING(event):
 	if event==PE_IDLE :
 		player_task=PT_BUY_BUILDING
-		print_trace_event(event)
+		#print_trace_event(event)
 		task_target_object=get_node("/root/Spiel/Townhall")
 		enter_PO_GOTO_TARGET(task_target_object)
 		return
 		
 	if event==PE_TARGET_MET:
-		print_trace_event(event)
+		#print_trace_event(event)
 		last_settlement_seen=target_of_operation
 		if(strategic_target_settlement.get_owner_team()): # already bought
 			my_team.ask_for_mission(self)
@@ -592,15 +592,15 @@ func manage_PT_BUY_BUILDING(event):
 		enter_PO_PAUSE(2)
 	
 	if event==PE_TIMER_TIMEOUT:
-		print_trace_event(event)
+		#print_trace_event(event)
 		enter_PO_GOTO_TARGET(task_target_object)
 		return
 		
 	if event==PE_EXCHANGE_COMPLETE:
 		if(task_target_object==get_node("/root/Spiel/Townhall")): #when at townhall
-			print_trace_event(event)
+			#print_trace_event(event)
 			target_of_operation.disconnect_exchange_partner(self)
-			if my_team.take_posession(strategic_target_settlement):
+			if my_team.take_posession(strategic_target_settlement,player_mission_id):
 				modify_inventory_subtract(strategic_target_price)
 				my_team.modify_team_score(1)
 				for r in range(0,strategic_target_price.size()):
@@ -619,12 +619,12 @@ func manage_PT_BUY_EXTENTION(event):
 	match event:
 		PE_IDLE :
 			player_task=PT_BUY_EXTENTION
-			print_trace_event(event)
+			#print_trace_event(event)
 			task_target_object=get_node("/root/Spiel/Townhall")
 			enter_PO_GOTO_TARGET(task_target_object)
 		
 		PE_TARGET_MET:
-			print_trace_event(event)
+			#print_trace_event(event)
 			if task_target_object==strategic_target_settlement: #final touch of settlement
 				my_team.ask_for_mission(self)
 				return
@@ -641,12 +641,12 @@ func manage_PT_BUY_EXTENTION(event):
 			enter_PO_PAUSE(2)
 			
 		PE_TIMER_TIMEOUT:
-			print_trace_event(event)
+			#print_trace_event(event)
 			enter_PO_GOTO_TARGET(task_target_object)
 
 		PE_EXCHANGE_COMPLETE:
 			if(task_target_object==get_node("/root/Spiel/Townhall")): 
-				print_trace_event(event)
+				#print_trace_event(event)
 				target_of_operation.disconnect_exchange_partner(self)
 				strategic_target_settlement.build_extention(strategic_target_asset)
 				modify_inventory_subtract(strategic_target_price)
@@ -656,7 +656,7 @@ func manage_PT_BUY_EXTENTION(event):
 				task_target_object=strategic_target_settlement
 				enter_PO_GOTO_TARGET(strategic_target_settlement)
 			else:
-				print_trace_event(event)
+				#print_trace_event(event)
 				target_of_operation.disconnect_exchange_partner(self)
 				my_team.ask_for_mission()
 
@@ -725,17 +725,7 @@ func determine_best_change_partner():
 		
 					
 					
-func get_last_missing_resource_index():
-	var missing_count=0
-	var missing_index=-1
-	for i in range (0, strategic_target_price.size()):
-		if strategic_target_price[i]>ressource_inventory[i]:
-			missing_count+=strategic_target_price[i]-ressource_inventory[i]
-			missing_index=i
-	if missing_count==1:
-		return missing_index
-	else:
-		return -1
+
 
 
 
@@ -751,21 +741,9 @@ func _on_Vision_area_entered(area):
 		if settlement.get_owner_team()==my_team and strategic_target==ST_GATHER_RESOURCES:
 			enter_PO_GOTO_TARGET(settlement)
 
-func get_team():
-	return my_team
 
-func get_sunpoint_sum():
-	var sun_point_sum=0
-	for i in range (0,sunpoint_inventory.size()):
-		sun_point_sum+=sunpoint_inventory[i]
-	return sun_point_sum
 	
-func amount_missing(target_price):
-	var deviation=0
-	for r in range(0,ressource_inventory.size()):
-		if ressource_inventory[r]<target_price[r]:
-			deviation+=target_price[r]-ressource_inventory[r]
-	return deviation
+
 
 func is_gathering_resources():
 	return (strategic_target==ST_GATHER_RESOURCES)
@@ -773,11 +751,39 @@ func is_gathering_resources():
 func is_trying_to_buy():
 	return (strategic_target==ST_BUY_EXTENTION or strategic_target==ST_BUY_SETTLEMENT )
 
+func get_amount_missing(target_price):
+	var deviation=0
+	for r in range(0,ressource_inventory.size()):
+		if ressource_inventory[r]<target_price[r]:
+			deviation+=target_price[r]-ressource_inventory[r]
+	return deviation
 
+
+func get_last_missing_resource_index():
+	var missing_count=0
+	var missing_index=-1
+	for i in range (0, strategic_target_price.size()):
+		if strategic_target_price[i]>ressource_inventory[i]:
+			missing_count+=strategic_target_price[i]-ressource_inventory[i]
+			missing_index=i
+	if missing_count==1:
+		return missing_index
+	else:
+		return -1
+		
 func get_resource_count():
 	var total_count=0
 	for r in range(0,ressource_inventory.size()):
 		total_count+=ressource_inventory[r]
 	return total_count
-		
 
+
+
+func get_sunpoint_sum():
+	var sun_point_sum=0
+	for i in range (0,sunpoint_inventory.size()):
+		sun_point_sum+=sunpoint_inventory[i]
+	return sun_point_sum		
+	
+func get_team():
+	return my_team

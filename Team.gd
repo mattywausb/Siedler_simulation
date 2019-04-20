@@ -1,7 +1,7 @@
 extends Node
 
 # constants 
-const teamsize=7
+const teamsize=2
 
 # main properties
 
@@ -15,27 +15,36 @@ var owned_settlement=[]
 
 # Strategy 
 enum {MT_SETTLEMENT,MT_TOWN,MT_EXTENTION}  # Mission types
+const mt_text=["MT_SETTLEMENT","MT_TOWN","MT_EXTENTION"]
 enum {BRICK,IRON,WOOL,WEED,WOOD}
 
 
-#var team_mission=[{mission_id=0,to_buy=SETTLEMENT,resource=BRICK,is_ordered_by=false},
-#				  {mission_id=1,to_buy=SETTLEMENT,resource=IRON,is_ordered_by=false},
-#				  {mission_id=2,to_buy=SETTLEMENT,resource=WEED,is_ordered_by=false},
-#				  {mission_id=3,to_buy=SETTLEMENT,resource=WOOL,is_ordered_by=false},
-#				  {mission_id=4,to_buy=SETTLEMENT,resource=WOOD,is_ordered_by=false}]
+#var team_mission=[{mission_id=0,mission_type=SETTLEMENT,resource=BRICK,is_done_by=false},
+#				  {mission_id=1,mission_type=SETTLEMENT,resource=IRON,is_done_by=false},
+#				  {mission_id=2,mission_type=SETTLEMENT,resource=WEED,is_done_by=false},
+#				  {mission_id=3,mission_type=SETTLEMENT,resource=WOOL,is_done_by=false},
+#				  {mission_id=4,mission_type=SETTLEMENT,resource=WOOD,is_done_by=false}]
 
-var team_mission={0:{to_buy=MT_SETTLEMENT,resource=BRICK,is_ordered_by=false},
-				   1:{to_buy=MT_SETTLEMENT,resource=IRON,is_ordered_by=false},
-				   2:{to_buy=MT_SETTLEMENT,resource=WOOL,is_ordered_by=false},
-				   3:{to_buy=MT_SETTLEMENT,resource=WEED,is_ordered_by=false},
-				   4:{to_buy=MT_SETTLEMENT,resource=WOOD,is_ordered_by=false}}
+var team_mission={1:{mission_type=MT_SETTLEMENT,resource=BRICK,is_done_by=false,price=[0,0,0,0,0]},
+				   2:{mission_type=MT_SETTLEMENT,resource=IRON,is_done_by=false,price=[0,0,0,0,0]},
+				   3:{mission_type=MT_SETTLEMENT,resource=WOOL,is_done_by=false,price=[0,0,0,0,0]},
+				   4:{mission_type=MT_SETTLEMENT,resource=WEED,is_done_by=false,price=[0,0,0,0,0]},
+				   5:{mission_type=MT_SETTLEMENT,resource=WOOD,is_done_by=false,price=[0,0,0,0,0]}}
 				
 				   # Other examples added later by the functions
-				   # {to_buy=MT_TOWN,settlement=owned_settlement[s],is_ordered_by=false}
-				   # {to_buy=MT_EXTENTION,settlement=owned_settlement[s],extention_type=SCHOOL,is_ordered_by=false}
+				   # {mission_type=MT_TOWN,settlement=owned_settlement[s],is_done_by=false}
+				   # {mission_type=MT_EXTENTION,settlement=owned_settlement[s],extention_type=SCHOOL,is_done_by=false}
 
 
-var mission_sequence=team_mission.size()
+var mission_sequence=team_mission.size()+1
+
+func print_trace_with_note(note):
+	prints("Team",team_index,note)
+
+func print_trace_team_missions():
+	for mission_id in team_mission:
+		var mission=team_mission[mission_id]
+		prints("Team",team_index,"Mission",mission_id,mt_text[mission.mission_type],mission)
 
 
 func _ready():
@@ -58,7 +67,7 @@ func _ready():
 			team_index=i
 	$Scoreboard.set_position(Vector2(team_index*200,10))
 	get_node("Scoreboard/ScoreDisplay").set_text("%03d"%team_score)
-	
+	print_trace_team_missions()
 	
 ###### Presentation
 
@@ -76,10 +85,14 @@ func modify_team_score(delta):
 
 
 ###### Operations
-
+func add_mission(new_mission):
+	mission_sequence+=1
+	team_mission[mission_sequence]=new_mission
 	
 func ask_for_mission(teammember):
-	prints("Asked for mission")
+	prints(teammember,"- asked for mission")
+	cancel_old_mission(teammember)
+	
 	if get_owned_settlement_count()==0 :
 		teammember.start_search_for_settlement()
 		return
@@ -98,72 +111,91 @@ func ask_for_mission(teammember):
 	# check if we can build an extention
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
-		if mission.is_ordered_by:
+		if mission.is_done_by:
 			continue
-		match mission.to_buy:
+		match mission.mission_type:
 			MT_TOWN:
 				if get_amount_missing(Global.get_price_for_town())<=0:
-					teammember.start_buy_town(mission_id,mission.settlement)
+					teammember.start_buy_town_extention(mission_id,mission.settlement)
 					return
 			MT_EXTENTION:
 				if get_amount_missing(owned_settlement[0].get_extention_price(mission.extention_type))<=0:	
 					teammember.start_buy_town_extention(mission_id,mission.extention_type,mission.settlement)
 					return
 	teammember.start_search_for_settlement()
+	
+	
+func cancel_old_mission(teammember):
+	for mission_id in team_mission:
+		var mission=team_mission[mission_id]
+		if mission.is_done_by and mission.is_done_by==teammember:
+			mission.is_done_by=false
+			if mission.mission_type==MT_SETTLEMENT:
+				mission.mission_price=[0,0,0,0,0]
+	recalculate_resource_needs()
 
 
-func cancel_mission(mission_id):
-	if(team_mission.has(mission_id)):
-		team_mission[mission_id].is_ordered_by=false
-
-
-func complete_mission(mission_id):
-	# remove the completed mission from the list
-	var current_mission_to_buy_count=[0,0,0]
-	for m in range(0,team_mission.size()):
-		if team_mission[m].get("mission_id")==mission_id:
-			team_mission.remove(m)
-		else:
-			current_mission_to_buy_count[team_mission[m].get("mission_id")]+=1
+func complete_mission(completed_mission_id):
+	print_trace_with_note("Mission complete "+str(completed_mission_id))
+	# remove the completed mission from the list and decide for a new one
+	
+	team_mission.erase(completed_mission_id)
+	
+	var current_mission_mission_type_count=[0,0,0]
+	
+	for mission_id in team_mission:
+		var mission=team_mission[mission_id]
+		current_mission_mission_type_count[mission.mission_type]+=1
 			
 	if team_mission.size()>=5:
 		return
 	
-	mission_sequence+=1
 	# decide new mission to add
-	if current_mission_to_buy_count[MT_TOWN]==0:
+	if current_mission_mission_type_count[MT_TOWN]==0:
 		for s in range (0,owned_settlement.size()):
 			if !owned_settlement[s].is_town():
-				var new_mission={to_buy=MT_TOWN,settlement=owned_settlement[s],is_ordered_by=false}
-				team_mission.append(new_mission)
+				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],is_done_by=false}
+				add_mission(new_mission)
 				break
-				
-	if team_mission.size()>=5:
-		return
-		
+
 	## 2do Add more rules what to do here
+				
+	if team_mission.size()<5:
+		var best_next_settlement=get_least_produced_resource()
+		var new_mission={mission_type=MT_SETTLEMENT,resource=best_next_settlement,is_done_by=false,price=[0,0,0,0,0]}
+		add_mission(new_mission)
+		
+	print_trace_team_missions()
+
 
 func has_interest_on_settlement(target_settlement,initiating_teammate):
+	prints(initiating_teammate, "- wants a settlement buy evaluation")
 	if(target_settlement.get_owner_team()!=null): # already owned
 		return false
 	if get_number_of_buying_members()>get_member_count()/2:	# team already occupied
 		return false
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
-		if (mission.to_buy==MT_SETTLEMENT 
+		if (mission.mission_type==MT_SETTLEMENT 
 		  and mission.resource==target_settlement.get_settlement_resource()
-		  and !mission.is_ordered_by):
+		  and !mission.is_done_by):
 			if get_amount_missing(target_settlement.settlement_price)>0:
 				continue
 			if target_settlement.get_settlement_price_count()-1>(get_resource_count()/2):
 				continue
-			mission.is_ordered_by=initiating_teammate
+			mission.is_done_by=initiating_teammate
+			prints(initiating_teammate, "- gets ok to buy settlement")
 			return mission_id
 	return false
 
-func take_posession(settlement):
+func recalculate_resource_needs():
+	print("Recalculate needs ######### to be done #######")
+	return
+
+func take_posession(settlement,mission_id):
+	complete_mission(mission_id)
 	if owned_settlement.has(settlement):
-			return true
+			return false
 	if settlement.set_owner_team(self):
 		owned_settlement.append(settlement)
 		return true
@@ -181,6 +213,20 @@ func get_amount_missing(target_price):
 			deviation+=target_price[i]-team_resources[i]
 	return deviation 
 
+func get_least_produced_resource():
+	var income_matrix=[0,0,0,0,0]
+	for settlement in owned_settlement:
+		if settlement.is_town():
+			income_matrix[settlement.get_settlement_resource()]+=2
+		else:
+			income_matrix[settlement.get_settlement_resource()]+=1
+	var min_income=income_matrix[0]
+	var min_income_resource=0
+	for i in range (1,income_matrix.size()):
+		if income_matrix[i]<min_income:
+			min_income=income_matrix[i]
+			min_income_resource=i
+	return min_income_resource
 
 func get_member_count():
 	return $Teammates.get_child_count()
