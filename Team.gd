@@ -90,7 +90,7 @@ func add_mission(new_mission):
 	mission_sequence+=1
 	team_mission[mission_sequence]=new_mission
 	
-func determine_mission(teammember):
+func determine_next_mission(teammember):
 	prints(teammember,"- asked for mission")
 	cancel_old_mission(teammember)
 	
@@ -133,7 +133,7 @@ func cancel_old_mission(teammember):
 			mission.is_done_by=false
 			if mission.mission_type==MT_SETTLEMENT:
 				mission.mission_price=[0,0,0,0,0]
-	update_resource_needs()
+
 
 
 func complete_mission(completed_mission_id):
@@ -186,13 +186,9 @@ func has_interest_on_settlement(target_settlement,initiating_teammate):
 				continue
 			mission.is_done_by=initiating_teammate
 			mission.price=target_settlement.get_settlement_price()
-			update_resource_needs()
 			prints(initiating_teammate, "- gets ok to buy settlement")
 			return mission_id
 	return false
-
-
-	return
 
 func take_posession(settlement,mission_id):
 	complete_mission(mission_id)
