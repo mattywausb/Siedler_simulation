@@ -6,7 +6,7 @@
 [ext_resource path="res://Settlement.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Team.tscn" type="PackedScene" id=5]
 
-[node name="Spiel" type="Node" index="0"]
+[node name="Spiel" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -195,7 +195,5 @@ position = Vector2( 537.508, 180.761 )
 [node name="Teams" type="Node" parent="." index="5"]
 
 [node name="Team1" parent="Teams" index="0" instance=ExtResource( 5 )]
-
-[node name="Team2" parent="Teams" index="1" instance=ExtResource( 5 )]
 
 

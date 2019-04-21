@@ -1,7 +1,7 @@
 extends Node
 
 # constants 
-const teamsize=8
+const teamsize=12
 
 const price_for_town= [0,3,0,2,0]
 
@@ -93,7 +93,7 @@ func add_mission(new_mission):
 	team_mission[mission_sequence]=new_mission
 	
 func determine_next_mission(teammember):
-	prints(teammember,"- asked for mission")
+	#prints(teammember,"- asked for mission")
 	cancel_old_mission(teammember)
 	
 	if get_owned_settlement_count()==0 :
@@ -120,11 +120,15 @@ func determine_next_mission(teammember):
 			MT_TOWN:
 				if get_amount_missing(Global.get_price_for_town())<=1:
 					teammember.start_buy_town_extention(mission_id,mission.settlement)
+					mission.is_done_by=teammember
 					return
 			MT_EXTENTION:
 				if get_amount_missing(owned_settlement[0].get_extention_price(mission.extention_type))<=1:	
 					teammember.start_buy_town_extention(mission_id,mission.extention_type,mission.settlement)
+					mission.is_done_by=teammember
 					return
+
+	#default behaviour:
 	teammember.start_search_for_settlement()
 	
 	
@@ -172,7 +176,7 @@ func complete_mission(completed_mission_id):
 
 
 func decide_on_settlement(target_settlement,initiating_teammate):
-	prints(initiating_teammate, "- wants a settlement buy evaluation")
+	#prints(initiating_teammate, "- wants a settlement buy evaluation")
 	if(target_settlement.get_owner_team()!=null): # already owned
 		return false
 	if get_number_of_buying_members()>get_member_count()/2:	# team already occupied
@@ -188,7 +192,7 @@ func decide_on_settlement(target_settlement,initiating_teammate):
 				continue
 			mission.is_done_by=initiating_teammate
 			mission.price=target_settlement.get_settlement_price()
-			prints(initiating_teammate, "- gets ok to buy settlement")
+			#prints(initiating_teammate, "- gets ok to buy settlement")
 			return mission_id
 	return false
 
@@ -214,7 +218,7 @@ func has_member(candidate):
 func get_amount_missing(target_price):
 	var deviation=0
 	var team_resources=get_team_resources()
-	prints("checking_price",target_price)
+	#prints("checking_price",target_price)
 	for i in range(0,team_resources.size()):
 		if team_resources[i]<target_price[i]:
 			deviation+=target_price[i]-team_resources[i]
@@ -300,5 +304,5 @@ func get_team_resources():
 	for p in range(0,$Teammates.get_child_count()):
 		for i in range(0,team_resources.size()):
 			team_resources[i]+=$Teammates.get_child(p).ressource_inventory[i]
-	prints("Team has:",team_resources)
+	#prints("Team has:",team_resources)
 	return team_resources

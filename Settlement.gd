@@ -197,18 +197,19 @@ func build_extention(extention_name):
 		extention_list[extention_name]=true
 	update_inventory_display()
 
-func connect_transaction_player(partner):
-	if transaction_player:
+func bind_transaction_partner(partner):
+	if transaction_partner:
 		return false
-	if owner_team and partner.get_team()!=owner_team:
+	if owner_team and partner.get_team()!=owner_team: # only bind to owning team
 		return false
-	transaction_player=partner
+	transaction_partner=partner
 	return true
-
-func disconnect_transaction_player(partner):
-	if partner==transaction_player:
-		transaction_player=null
 		
+func unbind_transaction_partner(partner):
+	if transaction_partner and transaction_partner==partner:
+		transaction_partner=null
+
+
 func give_sun_points():
 	var points=[0,0,0,0,0]
 	if current_sun_points>0:

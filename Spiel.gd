@@ -4,13 +4,14 @@ extends Node
 # var a = 2
 # var b = "textvar"
 
+const team_color=["ff0000","00ff00","08D8D8"]
+
 func _ready():
 	# Called when the node is added to the scene for the first time.
 	# Initialization here
 	randomize()
-	get_node("Teams/Team1").set_teamColor("ff0000")
-	get_node("Teams/Team2").set_teamColor("00ff00")
-	#get_node("Teams/Team3").set_teamColor("00E8E8")
+	for c in range(0,$Teams.get_child_count()):
+		$Teams.get_child(c).set_teamColor(team_color[c])
 	
 	var trace_high=0
 	var trace_low=10000
