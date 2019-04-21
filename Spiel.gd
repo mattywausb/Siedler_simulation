@@ -9,8 +9,8 @@ func _ready():
 	# Initialization here
 	randomize()
 	get_node("Teams/Team1").set_teamColor("ff0000")
-	#get_node("Teams/Team2").set_teamColor("00ff00")
-	#get_node("Teams/Team3").set_teamColor("0000ff")
+	get_node("Teams/Team2").set_teamColor("00ff00")
+	#get_node("Teams/Team3").set_teamColor("00E8E8")
 	
 	var trace_high=0
 	var trace_low=10000

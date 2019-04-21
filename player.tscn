@@ -12,7 +12,7 @@ radius = 92.8727
 custom_solver_bias = 0.0
 radius = 2.36741
 
-[node name="Player" type="KinematicBody2D" index="0"]
+[node name="Player" type="KinematicBody2D"]
 
 input_pickable = false
 collision_layer = 1
@@ -910,7 +910,6 @@ autostart = false
 [node name="OperationIndicators" type="Node2D" parent="." index="6"]
 
 editor/display_folded = true
-visible = false
 
 [node name="GOTO_TARGET" type="Polygon2D" parent="OperationIndicators" index="0"]
 

@@ -17,12 +17,12 @@ func _process(delta):
 		get_node("MainShape").self_modulate=Color(1,1,1)
 
 
-func connect_exchange_partner(partner):
+func connect_transaction_player(partner):
 	if exchange_partner:
 		return false
 	exchange_partner=partner
 	return true
 	
-func disconnect_exchange_partner(partner):
+func disconnect_transaction_player(partner):
 	if partner==exchange_partner:
 		exchange_partner=null

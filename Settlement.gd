@@ -5,7 +5,7 @@ extends StaticBody2D
 # class member variables go here, for example:
 # var a = 2
 # var b = "textvar"
-var exchange_partner=null
+var transaction_player=null
 var my_index=-1
 var current_sun_points=2  #inital sun point you get, when buying the settlement
 var owner_team
@@ -48,7 +48,7 @@ func _ready():
 	pass
 
 func _process(delta):
-	if exchange_partner:
+	if transaction_player:
 		get_node("MainShape").self_modulate=Color(1,0.2,0.2)
 	else:
 		get_node("MainShape").self_modulate=Color(1,1,1)
@@ -197,17 +197,17 @@ func build_extention(extention_name):
 		extention_list[extention_name]=true
 	update_inventory_display()
 
-func connect_exchange_partner(partner):
-	if exchange_partner:
+func connect_transaction_player(partner):
+	if transaction_player:
 		return false
 	if owner_team and partner.get_team()!=owner_team:
 		return false
-	exchange_partner=partner
+	transaction_player=partner
 	return true
 
-func disconnect_exchange_partner(partner):
-	if partner==exchange_partner:
-		exchange_partner=null
+func disconnect_transaction_player(partner):
+	if partner==transaction_player:
+		transaction_player=null
 		
 func give_sun_points():
 	var points=[0,0,0,0,0]

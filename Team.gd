@@ -1,7 +1,9 @@
 extends Node
 
 # constants 
-const teamsize=2
+const teamsize=8
+
+const price_for_town= [0,3,0,2,0]
 
 # main properties
 
@@ -59,7 +61,7 @@ func _ready():
 		var x=randi()%(int(get_viewport().size.x/8))-get_viewport().size.x/16+get_viewport().size.x/2
 		var y=randi()%(int(get_viewport().size.y/8))-get_viewport().size.y/16+get_viewport().size.y/2
 		new_teammate.set_position(Vector2(x,y))
-		if i<=2:
+		if i<=1:
 			new_teammate.modify_inventory_add([1,1,1,1,1])
 		print("Place player to " ,x,",",y)
 		$Teammates.add_child(new_teammate)
@@ -116,11 +118,11 @@ func determine_next_mission(teammember):
 			continue
 		match mission.mission_type:
 			MT_TOWN:
-				if get_amount_missing(Global.get_price_for_town())<=0:
+				if get_amount_missing(Global.get_price_for_town())<=1:
 					teammember.start_buy_town_extention(mission_id,mission.settlement)
 					return
 			MT_EXTENTION:
-				if get_amount_missing(owned_settlement[0].get_extention_price(mission.extention_type))<=0:	
+				if get_amount_missing(owned_settlement[0].get_extention_price(mission.extention_type))<=1:	
 					teammember.start_buy_town_extention(mission_id,mission.extention_type,mission.settlement)
 					return
 	teammember.start_search_for_settlement()
@@ -155,7 +157,7 @@ func complete_mission(completed_mission_id):
 	if current_mission_mission_type_count[MT_TOWN]==0:
 		for s in range (0,owned_settlement.size()):
 			if !owned_settlement[s].is_town():
-				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],is_done_by=false}
+				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],is_done_by=false,price=price_for_town}
 				add_mission(new_mission)
 				break
 
@@ -169,7 +171,7 @@ func complete_mission(completed_mission_id):
 	print_trace_team_missions()
 
 
-func has_interest_on_settlement(target_settlement,initiating_teammate):
+func decide_on_settlement(target_settlement,initiating_teammate):
 	prints(initiating_teammate, "- wants a settlement buy evaluation")
 	if(target_settlement.get_owner_team()!=null): # already owned
 		return false
@@ -199,6 +201,13 @@ func take_posession(settlement,mission_id):
 		return true
 	return false
 
+# evaluators
+func has_member(candidate):
+	for p in range(0,$Teammates.get_child_count()):
+		if $Teammates.get_child(p)==candidate:
+			return true
+	return false
+	
 
 # getter / Setter
 
@@ -264,10 +273,11 @@ func get_resource_need_score():
 			var fac=0.25
 			if mission.is_done_by:
 				fac=0.5
-			for r in range (0,need_score):
+			for r in range (0,need_score.size()):
 					need_score[r]+=mission.price[r]*fac
 	for r in range(0,need_score.size()):
 		need_score[r]=int(need_score[r])
+	return need_score
 	
 
 func set_teamColor(color):
