@@ -10,7 +10,7 @@ config_version=3
 
 [application]
 
-config/name="SiedlerInEchtSpielsimulation"
+config/name="Siedler In Echt"
 run/main_scene="res://Spiel.tscn"
 config/icon="res://icon.png"
 
@@ -29,5 +29,6 @@ window/size/height=900
 
 [rendering]
 
+quality/intended_usage/framebuffer_allocation=0
 environment/default_clear_color=Color( 0, 0.234375, 0.0421143, 1 )
 environment/default_environment="res://default_env.tres"

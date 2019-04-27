@@ -16,3 +16,6 @@ func _ready():
 #	pass
 static func get_price_for_town():
 	return [0,3,0,2,0]
+	
+static func get_price_miss_limit():
+	return 2

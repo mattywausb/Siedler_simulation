@@ -5,7 +5,7 @@ extends StaticBody2D
 # class member variables go here, for example:
 # var a = 2
 # var b = "textvar"
-var transaction_player=null
+var transaction_partner=null
 var my_index=-1
 var current_sun_points=2  #inital sun point you get, when buying the settlement
 var owner_team
@@ -48,7 +48,7 @@ func _ready():
 	pass
 
 func _process(delta):
-	if transaction_player:
+	if transaction_partner:
 		get_node("MainShape").self_modulate=Color(1,0.2,0.2)
 	else:
 		get_node("MainShape").self_modulate=Color(1,1,1)

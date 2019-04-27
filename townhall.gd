@@ -11,7 +11,7 @@ func _ready():
 	pass
 
 func _process(delta):
-	if exchange_partner:
+	if transaction_partner:
 		get_node("MainShape").self_modulate=Color(1,0,0)
 	else:
 		get_node("MainShape").self_modulate=Color(1,1,1)

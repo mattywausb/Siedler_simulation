@@ -1,7 +1,7 @@
 extends Node
 
 # constants 
-const teamsize=12
+const teamsize=2
 
 const price_for_town= [0,3,0,2,0]
 
