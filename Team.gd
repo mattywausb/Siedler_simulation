@@ -1,7 +1,8 @@
 extends Node
 
 # constants 
-const teamsize=2
+const teamsize=3
+const INITIALLY_STOCKED_MEMBERS=2
 
 const price_for_town= [0,3,0,2,0]
 
@@ -61,7 +62,7 @@ func _ready():
 		var x=randi()%(int(get_viewport().size.x/8))-get_viewport().size.x/16+get_viewport().size.x/2
 		var y=randi()%(int(get_viewport().size.y/8))-get_viewport().size.y/16+get_viewport().size.y/2
 		new_teammate.set_position(Vector2(x,y))
-		if i<=1:
+		if i<INITIALLY_STOCKED_MEMBERS:
 			new_teammate.modify_inventory_add([1,1,1,1,1])
 		print("Place player to " ,x,",",y)
 		$Teammates.add_child(new_teammate)
@@ -104,12 +105,13 @@ func determine_next_mission(teammember):
 		teammember.start_collect_ressources()
 		return
 
-	if get_number_of_buying_members()>get_member_count()/2:
-		if (get_resource_collector_count()<= get_member_count()/2 +1
-		 	and get_resource_collector_count()<= get_owned_settlement_count()/3+1):
+	if get_resource_collector_count()< (get_member_count()+1)/2:
+		if get_resource_collector_count()< (get_owned_settlement_count()/3+1):
 			teammember.start_collect_ressources()
-		else:
-			teammember.start_search_for_settlement()
+			return
+		
+	if get_number_of_buying_members()<get_member_count()/2:
+		teammember.start_search_for_settlement()
 
 	# check if we can build an extention
 	for mission_id in team_mission:
@@ -143,8 +145,8 @@ func cancel_old_mission(teammember):
 
 
 func complete_mission(completed_mission_id):
-	print_trace_with_note("Mission complete "+str(completed_mission_id))
-	# remove the completed mission from the list and decide for a new one
+	print_trace_with_note("Mission complete. Mission id= "+str(completed_mission_id))
+	# remove the completed mission from the list and add a new one to it
 	
 	team_mission.erase(completed_mission_id)
 	
@@ -160,7 +162,7 @@ func complete_mission(completed_mission_id):
 	# decide new mission to add
 	if current_mission_mission_type_count[MT_TOWN]==0:
 		for s in range (0,owned_settlement.size()):
-			if !owned_settlement[s].is_town():
+			if !owned_settlement[s].is_town(): # at this settlement is not a town
 				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],is_done_by=false,price=price_for_town}
 				add_mission(new_mission)
 				break
@@ -178,9 +180,9 @@ func complete_mission(completed_mission_id):
 func decide_on_settlement(target_settlement,initiating_teammate):
 	#prints(initiating_teammate, "- wants a settlement buy evaluation")
 	if(target_settlement.get_owner_team()!=null): # already owned
-		return false
+		return null
 	if get_number_of_buying_members()>get_member_count()/2:	# team already occupied
-		return false
+		return null
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
 		if (mission.mission_type==MT_SETTLEMENT 
@@ -192,9 +194,9 @@ func decide_on_settlement(target_settlement,initiating_teammate):
 				continue
 			mission.is_done_by=initiating_teammate
 			mission.price=target_settlement.get_settlement_price()
-			#prints(initiating_teammate, "- gets ok to buy settlement")
+			prints(initiating_teammate.get_instance_id(), "- gets ok to buy settlement. Mission ID=",mission_id)
 			return mission_id
-	return false
+	return null
 
 func take_posession(settlement,mission_id):
 	complete_mission(mission_id)

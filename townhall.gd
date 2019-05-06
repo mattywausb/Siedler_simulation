@@ -18,11 +18,14 @@ func _process(delta):
 
 
 func bind_transaction_partner(partner):
-	if transaction_partner:
+	if transaction_partner==partner:
+		return true
+	if transaction_partner!=null:
+		prints("Townhall already in transaction with",transaction_partner.get_instance_id())
 		return false
 	transaction_partner=partner
 	return true
 		
 func unbind_transaction_partner(partner):
-	if transaction_partner and transaction_partner==partner:
+	if transaction_partner!=null and transaction_partner==partner:
 		transaction_partner=null

@@ -167,6 +167,8 @@ func get_upgrade_price_town():
 # evaluations
 
 func is_extention_buildable(extention_name):
+	if extention_name==null:
+		return false
 	if extention_name=="TOWN":
 		return !is_town()
 	if extention_list.has(extention_name):
