@@ -87,12 +87,6 @@ const PT_str=["PT_IDLE","PT_EXCHANGE_WITH_TEAMMATE", "PT_STROLL_AROUND",
 	"PT_BUY_SETTLEMENT","PT_BUY_EXTENTION","PT_EXCHANGE_WITH_OPPONENT",
 	"PT_EXCHANGE_CLIENT"]
 
-
-const inventory_color=[	"cb0b0b", # 1 = brick
-					"000010", # 4 = iron
-					"d0d0d0", # 5 = wool
-					"e0a000", # 5 = weed
-					"25cb17"] # 6 = green
 					
 const sunpoint_color="f0f000"
 
@@ -266,7 +260,7 @@ func update_inventory_display():
 	for i in range (0,inventory_display.get_child_count()):
 		if ressource_inventory[i%5]>=int(i/5)+1:
 			inventory_display.get_child(i).visible=true
-			inventory_display.get_child(i).color=Color(inventory_color[i%5])
+			inventory_display.get_child(i).color=Color(Global.get_resource_color(i%5))
 		else:
 			inventory_display.get_child(i).visible=false
 	# color sunpoints
@@ -283,7 +277,7 @@ func update_inventory_display():
 	for i in range (0,inventory_display.get_child_count()):
 		if strategic_target_price[i%5]>=int(i/5)+1:
 			inventory_display.get_child(i).visible=true
-			inventory_display.get_child(i).color=Color(inventory_color[i%5])
+			inventory_display.get_child(i).color=Color(Global.get_resource_color(i%5))
 		else:
 			inventory_display.get_child(i).visible=false
 

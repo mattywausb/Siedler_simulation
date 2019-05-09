@@ -16,11 +16,6 @@ var extention_list={"NULL":true}
 
 const upgrade_price_town=[0,3,0,2,0]
 
-const inventory_color=[	"cb0b0b", # 1 = brick
-					"000010", # 4 = iron
-					"d0d0d0", # 5 = wool
-					"e0a000", # 5 = weed
-					"25cb17"] # 6 = green
 
 const sunpoint_color="f0f000"
 const school_color="8000A0"
@@ -83,7 +78,7 @@ func update_inventory_display():
 			for i in range (0,settlement_price[r]):
 				if slot_index<inventory_display.get_child_count():
 					inventory_display.get_child(slot_index).visible=true
-					inventory_display.get_child(slot_index).color=Color(inventory_color[r])
+					inventory_display.get_child(slot_index).color=Color(Global.get_resource_color(r))
 					slot_index+=1
 		for i in range (slot_index,inventory_display.get_child_count()):
 			inventory_display.get_child(i).visible=false
@@ -155,7 +150,7 @@ func get_settlement_resource():
 
 func set_settlement_resource(r):
 	settlement_resource=r
-	$Sign.color=Color(inventory_color[settlement_resource])
+	$Sign.color=Color(Global.get_resource_color(settlement_resource))
 
 func get_sun_point_sum():
 	return current_sun_points
