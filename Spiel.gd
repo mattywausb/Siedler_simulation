@@ -5,7 +5,9 @@ extends Node
 # var b = "textvar"
 
 const team_color=["ff0000","00ff00","08D8D8"]
+
 enum {WOOD,WOOL,CLAY,WEED,IRON}
+enum {XT_TOWER=10, XT_SCHOOL=20, XT_UNIVERSITY, XT_CHAPEL=30, XT_MONASTERY, XT_CHURCH, XT_MARKET=40, XT_STOCK_MARKET, XT_TOWN=100}
 
 const settlement_price_list=[
 		{resource=CLAY,price=[2,1,0,0,0]},

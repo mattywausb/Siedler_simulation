@@ -16,11 +16,13 @@ var owned_settlement=[]
 var resource_needs=[0,0,0,0,0]
 
 
+enum {WOOD,WOOL,CLAY,WEED,IRON}
+enum {XT_TOWER=10, XT_SCHOOL=20, XT_UNIVERSITY, XT_CHAPEL=30, XT_MONASTERY, XT_CHURCH, XT_MARKET=40, XT_STOCK_MARKET, XT_TOWN=100}
+
 
 # Strategy 
 enum {MT_SETTLEMENT,MT_TOWN,MT_EXTENTION}  # Mission types
 const mt_text=["MT_SETTLEMENT","MT_TOWN","MT_EXTENTION"]
-enum {WOOD,WOOL,CLAY,WEED,IRON}
 
 
 var team_mission={1:{mission_type=MT_SETTLEMENT,resource=CLAY,is_done_by=false,price=[0,0,0,0,0]},
@@ -115,12 +117,12 @@ func determine_next_mission(teammember):
 		match mission.mission_type:
 			MT_TOWN:
 				if get_amount_missing(Global.get_price_for_town())<=1:
-					teammember.start_buy_town_extention(mission_id,mission.settlement)
+					teammember.start_buy_town(mission_id,mission.settlement)
 					mission.is_done_by=teammember
 					return
 			MT_EXTENTION:
 				if get_amount_missing(owned_settlement[0].get_extention_price(mission.extention_type))<=1:	
-					teammember.start_buy_town_extention(mission_id,mission.extention_type,mission.settlement)
+					teammember.start_buy_extention(mission_id,mission.extention_type,mission.settlement)
 					mission.is_done_by=teammember
 					return
 
@@ -165,14 +167,35 @@ func do_mission_refinement():
 				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],resource=owned_settlement[s].get_settlement_resource(), is_done_by=false,price=price_for_town}
 				add_mission(new_mission)
 				break
+				
+	if team_mission.size()>=5:
+		print_trace_team_missions()
+		return
 
-	## 2do Add more rules what to do here
+	# add building extention mission
+	for s in range (0,owned_settlement.size()):
+		var base_idea=(randi()%4+1)*10 # Basic extentions are multiple of 10 between 10 and 40
+		for idea in range (base_idea,base_idea+9):
+			if owned_settlement[s].is_extention_buildable(idea):
+				var new_mission={mission_type=MT_EXTENTION,
+								settlement=owned_settlement[s],
+								extention_type=idea,
+								price=owned_settlement[s].get_extention_price(idea),
+								is_done_by=false}
+				add_mission(new_mission)
+				break
+		if team_mission.size()>=5:
+			print_trace_team_missions()
+			return
+				
+	if team_mission.size()>=5:
+		print_trace_team_missions()
+		return	
 
 	# add mission to buy settlement for a resource
-	if team_mission.size()<5:
-		var most_wanted=get_least_produced_resource()
-		var new_mission={mission_type=MT_SETTLEMENT,resource=most_wanted,is_done_by=false,price=[0,0,0,0,0]}
-		add_mission(new_mission)
+	var most_wanted=get_least_produced_resource()
+	var new_mission={mission_type=MT_SETTLEMENT,resource=most_wanted,is_done_by=false,price=[0,0,0,0,0]}
+	add_mission(new_mission)
 		
 	print_trace_team_missions()
 

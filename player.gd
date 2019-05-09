@@ -15,8 +15,9 @@ const PLAYER_DODGE_TIME=1
 const PLAYER_WAIT_TIME=2
 const PLAYER_COLLECT_TIME=0.1
 
+enum {WOOD,WOOL,CLAY,WEED,IRON}
+enum {XT_TOWER=10, XT_SCHOOL=20, XT_UNIVERSITY, XT_CHAPEL=30, XT_MONASTERY, XT_CHURCH, XT_MARKET=40, XT_STOCK_MARKET, XT_TOWN=100}
 
-enum {BRICK,IRON,WOOL,WEED,WOOD}
 	
 var ressource_inventory=[0,0,0,0,0]
 #var ressource_inventory=[2,2,2,2,2]  # DEBUG VERSION
@@ -132,6 +133,13 @@ func _on_Vision_area_entered(area):
 				prints(get_instance_id(),"sees",last_seen_player.get_instance_id())
 				manage_task(PE_SEE_OTHER_PLAYER)
 				
+
+func print_trace_start_mission(mission_name):
+	return
+	prints(get_instance_id(),"-",mission_name,
+							"mission_id=",player_mission_id,
+							"settlment=",strategic_target_settlement,
+							"asset=",strategic_target_asset)
 
 
 func print_trace_with_target(target):
@@ -832,38 +840,38 @@ func manage_task(event):
 
 
 func start_collect_ressources():
-	print_trace_with_note("start_collect_resources")
 	player_mission_id=null
 	strategic_target_settlement=null
 	strategic_target=ST_GATHER_RESOURCES
 	set_strategic_target_price(zero_price)
 	choose_task()
+	print_trace_start_mission("start_collect_resources")
 	
 func start_search_for_settlement():
-	print_trace_with_note("start_search_for_settlement")
 	strategic_target=ST_GATHER_INFORMATION
 	strategic_target_settlement=null
 	player_mission_id=null
 	set_strategic_target_price(zero_price)
 	choose_task()
+	print_trace_start_mission("start_search_for_settlement")
 	
-func start_buy_extention(mission_id,extention_name,target_settlement):
-	print_trace_with_note("start_buy_extention "+extention_name)
+func start_buy_extention(mission_id,extention_id,target_settlement):
 	player_mission_id=mission_id
 	strategic_target=ST_BUY_EXTENTION
-	strategic_target_asset=extention_name
+	strategic_target_asset=extention_id
 	strategic_target_settlement=target_settlement
-	set_strategic_target_price(target_settlement.get_extention_price(extention_name))
+	set_strategic_target_price(target_settlement.get_extention_price(extention_id))
 	choose_task()	
+	print_trace_start_mission("start_buy_extention")
 
-func start_buy_town_extention(mission_id,target_settlement):
-	print_trace_with_note("start_buy_town_extention")
+func start_buy_town(mission_id,target_settlement):
 	player_mission_id=mission_id
 	strategic_target=ST_BUY_EXTENTION
-	strategic_target_asset="TOWN"
+	strategic_target_asset=XT_TOWN
 	strategic_target_settlement=target_settlement
 	set_strategic_target_price(Global.get_price_for_town())
 	choose_task()
+	print_trace_start_mission("start_buy_town_extention")
 	
 
 func determine_best_change_partner():
