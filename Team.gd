@@ -96,18 +96,22 @@ func determine_next_mission(teammember):
 	if get_owned_settlement_count()==0 :
 		teammember.start_search_for_settlement()
 		return
-		
-	if get_resource_count()<5:
-		teammember.start_collect_ressources()
-		return
-
-	if get_resource_collector_count()< (get_member_count()+1)/2:
+	
+	# assign new collector if necessary
+	if get_resource_collector_count()< (get_member_count()-1)/2:
 		if get_resource_collector_count()< (get_owned_settlement_count()/3+1):
 			teammember.start_collect_ressources()
 			return
+	
+	# keep collecting if already on in
+	if teammember.is_gathering_resources():
+			teammember.start_collect_ressources()
+			return
 		
+	# restict number of buyers to half of member count	
 	if get_number_of_buying_members()<get_member_count()/2:
 		teammember.start_search_for_settlement()
+		return
 
 	# check if we can build an extention
 	for mission_id in team_mission:
@@ -146,6 +150,12 @@ func complete_mission(completed_mission_id):
 	
 	team_mission.erase(completed_mission_id)
 	do_mission_refinement()
+
+func discard_mission(completed_mission_id):
+	print_trace_with_note("Mission discarded. Mission id= "+str(completed_mission_id))
+	# remove the completed mission from the list and add a new one to it
+	team_mission.erase(completed_mission_id)
+	do_mission_refinement()
 	
 func do_mission_refinement():
 	
@@ -173,20 +183,21 @@ func do_mission_refinement():
 		return
 
 	# add building extention mission
-	for s in range (0,owned_settlement.size()):
-		var base_idea=(randi()%4+1)*10 # Basic extentions are multiple of 10 between 10 and 40
-		for idea in range (base_idea,base_idea+9):
-			if owned_settlement[s].is_extention_buildable(idea):
-				var new_mission={mission_type=MT_EXTENTION,
-								settlement=owned_settlement[s],
-								extention_type=idea,
-								price=owned_settlement[s].get_extention_price(idea),
-								is_done_by=false}
-				add_mission(new_mission)
-				break
-		if team_mission.size()>=5:
-			print_trace_team_missions()
-			return
+	if current_mission_mission_type_count[MT_EXTENTION]<2:
+		for s in range (0,owned_settlement.size()):
+			var base_idea=(randi()%4+1)*10 # Basic extentions are multiple of 10 between 10 and 40
+			for idea in range (base_idea,base_idea+9):
+				if owned_settlement[s].is_extention_buildable(idea):
+					var new_mission={mission_type=MT_EXTENTION,
+									settlement=owned_settlement[s],
+									extention_type=idea,
+									price=owned_settlement[s].get_extention_price(idea),
+									is_done_by=false}
+					add_mission(new_mission)
+					break
+			if team_mission.size()>=5:
+				print_trace_team_missions()
+				return
 				
 	if team_mission.size()>=5:
 		print_trace_team_missions()

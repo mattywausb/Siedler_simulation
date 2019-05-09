@@ -130,7 +130,7 @@ func _on_Vision_area_entered(area):
 		"PlayerVision":
 			if last_seen_player!=area.get_parent():
 				last_seen_player=area.get_parent()
-				prints(get_instance_id(),"sees",last_seen_player.get_instance_id())
+				#prints(get_instance_id(),"sees",last_seen_player.get_instance_id())
 				manage_task(PE_SEE_OTHER_PLAYER)
 				
 
@@ -541,6 +541,7 @@ func manage_PT_BUY_EXTENTION(event): # go to town hall, buy extention, goto sett
 				if !strategic_target_settlement.is_extention_buildable(strategic_target_asset):
 					# but cant finish our plan, since preferences are not met any more
 					end_transaction()
+					my_team.discard_mission(player_mission_id)
 					my_team.determine_next_mission(self) 
 					return
 				
@@ -558,19 +559,24 @@ func manage_PT_BUY_EXTENTION(event): # go to town hall, buy extention, goto sett
 		PE_EXCHANGE_COMPLETE:
 			if(task_target_object==get_node("/root/Spiel/Townhall")): 
 				#print_trace_event(event)
-				strategic_target_settlement.build_extention(strategic_target_asset)
-				modify_inventory_subtract(strategic_target_price)
-				my_team.modify_team_score(1)
-				end_transaction()
-				my_team.complete_mission(player_mission_id)
-				set_strategic_target_price(zero_price)
-				strategic_target_asset=null
-				task_target_object=strategic_target_settlement
-				manage_PT_EXCHANGE_WITH_SETTLEMENT(PE_INIT)
+				if strategic_target_settlement.build_extention(strategic_target_asset):
+					modify_inventory_subtract(strategic_target_price)
+					my_team.modify_team_score(1)
+					my_team.complete_mission(player_mission_id)
+					set_strategic_target_price(zero_price)
+					strategic_target_asset=null
+					task_target_object=strategic_target_settlement
+					end_transaction()
+					manage_PT_EXCHANGE_WITH_SETTLEMENT(PE_INIT)
+				else:
+					strategic_target_asset=null
+					my_team.discard_mission(player_mission_id)
+					end_transaction()
+					my_team.determine_next_mission(self)
 			else:
 				#print_trace_event(event)
 				end_transaction()
-				my_team.determine_next_mission()
+				my_team.determine_next_mission(self)
 
 func manage_PT_DISCOVER_SETTLEMENT(event):
 	# walk to an unknown settlement to check it out

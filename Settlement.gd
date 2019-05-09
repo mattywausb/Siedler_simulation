@@ -174,7 +174,7 @@ func is_extention_buildable(extention_id):
 		if !extention_list.has(extention_catalog[extention_id].needed_extention):
 			return false
 	else:
-		if extention_list.size()>=2:
+		if extention_list.size()>=3:# initial entry + 2
 			return false
 	return true
 
@@ -193,6 +193,7 @@ func build_extention(extention_id):
 			extention_list.erase(extention_catalog[extention_id].needed_extention)
 		extention_list[extention_id]=true
 	update_inventory_display()
+	return true
 
 func bind_transaction_partner(partner):
 	if transaction_partner:
