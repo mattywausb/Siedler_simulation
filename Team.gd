@@ -143,7 +143,11 @@ func complete_mission(completed_mission_id):
 	# remove the completed mission from the list and add a new one to it
 	
 	team_mission.erase(completed_mission_id)
+	do_mission_refinement()
 	
+func do_mission_refinement():
+	
+	# aggregate current mission types
 	var current_mission_mission_type_count=[0,0,0]
 	
 	for mission_id in team_mission:
@@ -154,18 +158,20 @@ func complete_mission(completed_mission_id):
 		return
 	
 	# decide new mission to add
+	# add town extention mission
 	if current_mission_mission_type_count[MT_TOWN]==0:
 		for s in range (0,owned_settlement.size()):
 			if !owned_settlement[s].is_town(): # at this settlement is not a town
-				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],is_done_by=false,price=price_for_town}
+				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],resource=owned_settlement[s].get_settlement_resource(), is_done_by=false,price=price_for_town}
 				add_mission(new_mission)
 				break
 
 	## 2do Add more rules what to do here
-				
+
+	# add mission to buy settlement for a resource
 	if team_mission.size()<5:
-		var best_next_settlement=get_least_produced_resource()
-		var new_mission={mission_type=MT_SETTLEMENT,resource=best_next_settlement,is_done_by=false,price=[0,0,0,0,0]}
+		var most_wanted=get_least_produced_resource()
+		var new_mission={mission_type=MT_SETTLEMENT,resource=most_wanted,is_done_by=false,price=[0,0,0,0,0]}
 		add_mission(new_mission)
 		
 	print_trace_team_missions()
@@ -222,17 +228,29 @@ func get_amount_missing(target_price):
 
 func get_least_produced_resource():
 	var income_matrix=[0,0,0,0,0]
+	
+	# collect available income
 	for settlement in owned_settlement:
 		if settlement.is_town():
 			income_matrix[settlement.get_settlement_resource()]+=2
 		else:
 			income_matrix[settlement.get_settlement_resource()]+=1
+
+
+	# add already planned income
+	for mission_id in team_mission:
+		var mission=team_mission[mission_id]
+		if mission.mission_type==MT_SETTLEMENT or mission.mission_type==MT_TOWN:
+			income_matrix[mission.resource]+=1
+
+	# search for resource with lowest score
 	var min_income=income_matrix[0]
 	var min_income_resource=0
 	for i in range (1,income_matrix.size()):
 		if income_matrix[i]<min_income:
 			min_income=income_matrix[i]
 			min_income_resource=i
+			
 	return min_income_resource
 
 func get_member_count():
