@@ -163,6 +163,9 @@ func is_extention_buildable(extention_name):
 		return !is_town()
 	if extention_list.has(extention_name):
 		return false
+	if !extention_catalog.has(extention_name):
+		prints("WARNING-is_extention_buildable: Bad extention name request",extention_name)
+		return false
 	if extention_catalog[extention_name].needs_town and !is_town:
 		return false
 	if extention_catalog[extention_name].needed_extention:

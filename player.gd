@@ -527,14 +527,15 @@ func manage_PT_BUY_EXTENTION(event): # go to town hall, buy extention, goto sett
 			if task_target_object==strategic_target_settlement: #final touch of settlement
 				my_team.determine_next_mission(self)
 				return
-				
+			
 			# we are at the townhall
-			if !strategic_target_settlement.is_extention_buildable(strategic_target_asset):
-				# but cant finish our plan, since preferences are not met any more
-				my_team.determine_next_mission(self) 
-				return
+			if begin_transaction(target_of_operation):	
+				if !strategic_target_settlement.is_extention_buildable(strategic_target_asset):
+					# but cant finish our plan, since preferences are not met any more
+					end_transaction()
+					my_team.determine_next_mission(self) 
+					return
 				
-			if begin_transaction(target_of_operation):
 				enter_PO_EXCHANGE_WITH_STATION(PLAYER_BUY_TIME)  # start trade with townhall
 			else:
 				enter_PO_GO_RANDOM_POSITION(200)
