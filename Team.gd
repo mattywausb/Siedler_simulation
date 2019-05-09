@@ -20,16 +20,10 @@ var resource_needs=[0,0,0,0,0]
 # Strategy 
 enum {MT_SETTLEMENT,MT_TOWN,MT_EXTENTION}  # Mission types
 const mt_text=["MT_SETTLEMENT","MT_TOWN","MT_EXTENTION"]
-enum {BRICK,IRON,WOOL,WEED,WOOD}
+enum {WOOD,WOOL,CLAY,WEED,IRON}
 
 
-#var team_mission=[{mission_id=0,mission_type=SETTLEMENT,resource=BRICK,is_done_by=false},
-#				  {mission_id=1,mission_type=SETTLEMENT,resource=IRON,is_done_by=false},
-#				  {mission_id=2,mission_type=SETTLEMENT,resource=WEED,is_done_by=false},
-#				  {mission_id=3,mission_type=SETTLEMENT,resource=WOOL,is_done_by=false},
-#				  {mission_id=4,mission_type=SETTLEMENT,resource=WOOD,is_done_by=false}]
-
-var team_mission={1:{mission_type=MT_SETTLEMENT,resource=BRICK,is_done_by=false,price=[0,0,0,0,0]},
+var team_mission={1:{mission_type=MT_SETTLEMENT,resource=CLAY,is_done_by=false,price=[0,0,0,0,0]},
 				   2:{mission_type=MT_SETTLEMENT,resource=IRON,is_done_by=false,price=[0,0,0,0,0]},
 				   3:{mission_type=MT_SETTLEMENT,resource=WOOL,is_done_by=false,price=[0,0,0,0,0]},
 				   4:{mission_type=MT_SETTLEMENT,resource=WEED,is_done_by=false,price=[0,0,0,0,0]},

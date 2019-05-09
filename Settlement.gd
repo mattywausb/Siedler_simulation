@@ -129,14 +129,9 @@ const max_distance=450
 const distance_range=max_distance-min_distance
 const distance_factor=(distance_range)/5
 
-func set_settlement_price(distance_to_station):
-	var total_ressource_count=int(max(0,distance_range-(distance_to_station-min_distance))/distance_factor)+3
-#	prints("Totel ressources",total_ressource_count)
-	for i in range(0,total_ressource_count):
-		var r=randi()%settlement_price.size()
-		while r==settlement_resource:
-			r=randi()%settlement_price.size()
-		settlement_price[r]+=1
+func set_settlement_price(price):
+	for r in range(0,settlement_price.size()):
+		settlement_price[r]=price[r]
 	update_inventory_display()
 
 func get_settlement_price_count():

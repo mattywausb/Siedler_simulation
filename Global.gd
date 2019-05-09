@@ -24,7 +24,7 @@ func _ready():
 #	# Update game logic here.
 #	pass
 static func get_price_for_town():
-	return [0,3,0,2,0]
+	return [0,0,0,2,3]
 	
 static func get_price_miss_limit():
 	return 2
