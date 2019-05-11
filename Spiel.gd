@@ -4,7 +4,7 @@ extends Node
 # var a = 2
 # var b = "textvar"
 
-const team_color=["ff0000","00ff00","08D8D8"]
+const team_color=["ff0000","00ff00","08D8D8","d0d000"]
 
 enum {WOOD,WOOL,CLAY,WEED,IRON}
 enum {XT_TOWER=10, XT_SCHOOL=20, XT_UNIVERSITY, XT_CHAPEL=30, XT_MONASTERY, XT_CHURCH, XT_MARKET=40, XT_STOCK_MARKET, XT_TOWN=100}
@@ -55,10 +55,13 @@ const settlement_price_list=[
 		{resource=CLAY,price=[0,3,0,2,3]}
 		]
 
+var start_time=0
+
 func _ready():
 	# Called when the node is added to the scene for the first time.
 	# Initialization here
 	randomize()
+	start_time=OS.get_system_time_secs()
 	for c in range(0,$Teams.get_child_count()):
 		$Teams.get_child(c).set_teamColor(team_color[c])
 	
@@ -98,3 +101,8 @@ func _ready():
 #	# Called every frame. Delta is time since last frame.
 #	# Update game logic here.
 #	pass
+
+
+func _on_Timer_timeout():
+	prints("Time:",OS.get_system_time_secs()-start_time)
+	pass # replace with function body

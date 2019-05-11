@@ -21,7 +21,7 @@ func bind_transaction_partner(partner):
 	if transaction_partner==partner:
 		return true
 	if transaction_partner!=null:
-		prints("Warehouse",get_instance_id(),"already in transaction with",transaction_partner.get_instance_id())
+		#prints("Warehouse",get_instance_id(),"already in transaction with",transaction_partner.get_instance_id())
 		return false
 	transaction_partner=partner
 	return true

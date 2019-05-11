@@ -6,7 +6,7 @@
 [ext_resource path="res://Settlement.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Team.tscn" type="PackedScene" id=5]
 
-[node name="Spiel" type="Node"]
+[node name="Spiel" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -58,7 +58,7 @@ position = Vector2( 1190.8, 161.285 )
 
 [node name="Settlement15" parent="settlements" index="1" instance=ExtResource( 4 )]
 
-position = Vector2( 1171.13, 559.581 )
+position = Vector2( 1133.13, 518.581 )
 
 [node name="Settlement16" parent="settlements" index="2" instance=ExtResource( 4 )]
 
@@ -82,7 +82,7 @@ position = Vector2( 454.497, 835.453 )
 
 [node name="Settlement5" parent="settlements" index="7" instance=ExtResource( 4 )]
 
-position = Vector2( 336.115, 96.7333 )
+position = Vector2( 268.525, 131.082 )
 
 [node name="Settlement18" parent="settlements" index="8" instance=ExtResource( 4 )]
 
@@ -94,7 +94,7 @@ position = Vector2( 1030.42, 867.957 )
 
 [node name="Settlement20" parent="settlements" index="10" instance=ExtResource( 4 )]
 
-position = Vector2( 191.472, 261.681 )
+position = Vector2( 209.201, 324.839 )
 
 [node name="Settlement6" parent="settlements" index="11" instance=ExtResource( 4 )]
 
@@ -110,7 +110,7 @@ position = Vector2( 792.68, 856.717 )
 
 [node name="Settlement35" parent="settlements" index="14" instance=ExtResource( 4 )]
 
-position = Vector2( 847.459, 368.075 )
+position = Vector2( 837.459, 407.075 )
 
 [node name="Settlement7" parent="settlements" index="15" instance=ExtResource( 4 )]
 
@@ -122,7 +122,7 @@ position = Vector2( 300.877, 693.974 )
 
 [node name="Settlement22" parent="settlements" index="17" instance=ExtResource( 4 )]
 
-position = Vector2( 211.272, 548.583 )
+position = Vector2( 260.025, 517.558 )
 
 [node name="Settlement23" parent="settlements" index="18" instance=ExtResource( 4 )]
 
@@ -138,7 +138,7 @@ position = Vector2( 881.169, 709.822 )
 
 [node name="Settlement28" parent="settlements" index="21" instance=ExtResource( 4 )]
 
-position = Vector2( 725.158, 631.231 )
+position = Vector2( 705.213, 562.533 )
 
 [node name="Settlement29" parent="settlements" index="22" instance=ExtResource( 4 )]
 
@@ -186,14 +186,29 @@ position = Vector2( 56.5651, 352.689 )
 
 [node name="Settlement26" parent="settlements" index="33" instance=ExtResource( 4 )]
 
-position = Vector2( 1078.38, 711.039 )
+position = Vector2( 1112.38, 672.039 )
 
 [node name="Settlement27" parent="settlements" index="34" instance=ExtResource( 4 )]
 
-position = Vector2( 537.508, 180.761 )
+position = Vector2( 478.782, 164.141 )
 
 [node name="Teams" type="Node" parent="." index="5"]
 
 [node name="Team1" parent="Teams" index="0" instance=ExtResource( 5 )]
+
+[node name="Team2" parent="Teams" index="1" instance=ExtResource( 5 )]
+
+[node name="Team3" parent="Teams" index="2" instance=ExtResource( 5 )]
+
+[node name="Team4" parent="Teams" index="3" instance=ExtResource( 5 )]
+
+[node name="Timer" type="Timer" parent="." index="6"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 
 

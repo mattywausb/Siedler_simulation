@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Team.gd" type="Script" id=1]
 
-[node name="Team" type="Node" index="0"]
+[node name="Team" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -57,5 +57,14 @@ texture_scale = Vector2( 1, 1 )
 texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
+
+[node name="Timer" type="Timer" parent="." index="2"]
+
+process_mode = 1
+wait_time = 15.0
+one_shot = false
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 
 

@@ -130,12 +130,15 @@ func _on_Vision_area_entered(area):
 		"PlayerVision":
 			if last_seen_player!=area.get_parent():
 				last_seen_player=area.get_parent()
-				#prints(get_instance_id(),"sees",last_seen_player.get_instance_id())
+#				if last_seen_player.my_team==my_team:
+#					prints(get_instance_id(),"sees partner",last_seen_player.get_instance_id())
+#				else:
+#					prints(get_instance_id(),"sees opponent",last_seen_player.get_instance_id())
 				manage_task(PE_SEE_OTHER_PLAYER)
 				
 
 func print_trace_start_mission(mission_name):
-	return
+	#return
 	prints(get_instance_id(),"-",mission_name,
 							"mission_id=",player_mission_id,
 							"settlment=",strategic_target_settlement,
@@ -193,6 +196,11 @@ func choose_task():
 			my_team.determine_next_mission(self)
 			
 	if strategic_target==ST_BUY_EXTENTION:
+		if !my_team.is_mission_still_valid(player_mission_id,self):
+			my_team.determine_next_mission(self)
+			manage_PT_STROLL_AROUND(PE_INIT)
+			return
+			
 		if get_amount_missing(strategic_target_price)==0:  # we can afford it
 			manage_PT_BUY_EXTENTION(PE_INIT)
 			return
@@ -200,18 +208,20 @@ func choose_task():
 		if my_team.get_amount_missing(strategic_target_price)==0: # need to get resources from teammate
 			manage_PT_EXCHANGE_WITH_TEAMMATE(PE_INIT)
 			return
-		elif my_team.get_amount_missing(strategic_target_price)<= Global.get_price_miss_limit(): # Team might get it by trading
-			manage_PT_STROLL_AROUND(PE_INIT)
-			return
-		else: # resources are far from getting available
-			my_team.determine_next_mission(self)
-			manage_PT_STROLL_AROUND(PE_INIT)
-			return
+
+		manage_PT_STROLL_AROUND(PE_INIT)
+		return
 
 	# should go to warehouse urgent
 	if get_sunpoint_sum()>=3:
 			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_INIT)
 			return
+	var need_score=my_team.get_resource_need_score()
+	for r in range(0,need_score.size()):
+		if need_score[r]>=4 and ressource_inventory[r]>=4:
+			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_INIT)
+			return
+		
 	
 	if strategic_target==ST_GATHER_RESOURCES:
 		if strategic_target_settlement:  # we already have a target
@@ -781,6 +791,20 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 			for r in range (0,ressource_inventory.size()):
 				ressource_inventory[r]+=sunpoint_inventory[r]
 				sunpoint_inventory[r]=0
+				
+			var need_score=my_team.get_resource_need_score()
+			var lowest_need_score=1000
+			var needed_resource=-1
+			for r in range(0,need_score.size()):
+				if need_score[r]<lowest_need_score:
+					lowest_need_score=need_score[r]
+					needed_resource=r
+			for r in range(0,need_score.size()):
+				if need_score[r]>=4 and ressource_inventory[r]>=4:
+					ressource_inventory[r]-=4
+					ressource_inventory[needed_resource]+=1
+					print_trace_with_note("Trade 4:1 with warehouse")
+					break
 			update_inventory_display()
 			end_transaction()
 			last_player_exchanged_with=null
@@ -851,7 +875,7 @@ func start_collect_ressources():
 	strategic_target=ST_GATHER_RESOURCES
 	set_strategic_target_price(zero_price)
 	choose_task()
-	print_trace_start_mission("start_collect_resources")
+	#print_trace_start_mission("start_collect_resources")
 	
 func start_search_for_settlement():
 	strategic_target=ST_GATHER_INFORMATION
@@ -859,7 +883,7 @@ func start_search_for_settlement():
 	player_mission_id=null
 	set_strategic_target_price(zero_price)
 	choose_task()
-	print_trace_start_mission("start_search_for_settlement")
+	#print_trace_start_mission("start_search_for_settlement")
 	
 func start_buy_extention(mission_id,extention_id,target_settlement):
 	player_mission_id=mission_id
@@ -877,7 +901,7 @@ func start_buy_town(mission_id,target_settlement):
 	strategic_target_settlement=target_settlement
 	set_strategic_target_price(Global.get_price_for_town())
 	choose_task()
-	print_trace_start_mission("start_buy_town_extention")
+	print_trace_start_mission("start_buy_town")
 	
 
 func determine_best_change_partner():
@@ -933,10 +957,12 @@ func want_to_trade():
 	var have_an_offer=false
 	var have_demand=false
 	for r in range (0,need_score.size()):
-		if need_score[r]>=1 and ressource_inventory[r]> strategic_target_price[r]:
-			have_an_offer=true
 		if need_score[r]<0:
 			have_demand=true
+		if ressource_inventory[r]==0:
+			have_demand=true
+		if need_score[r]>=0 and ressource_inventory[r]> strategic_target_price[r]:
+			have_an_offer=true
 	return have_an_offer and have_demand
 
 func try_to_trade(trade_partner):
@@ -945,11 +971,11 @@ func try_to_trade(trade_partner):
 	if transaction_partner!=trade_partner: # we expect to have an established transaction
 		return false
 	var need_score = my_team.get_resource_need_score()
-	prints(get_instance_id(),"Trying to trade with",trade_partner.get_instance_id())
+	#prints(get_instance_id(),"Trying to trade with",trade_partner.get_instance_id())
 	for offer in range (0,need_score.size()):
 		if need_score[offer]>=1 and ressource_inventory[offer]> strategic_target_price[offer]:
 			for demand in range (0,need_score.size()):
-				if need_score[demand]<0:
+				if need_score[demand]<0 or ressource_inventory[demand]==0:
 					if trade_partner.enter_into_trade(offer,demand):
 						ressource_inventory[offer]-=1
 						ressource_inventory[demand]+=1

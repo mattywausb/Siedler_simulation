@@ -1,7 +1,7 @@
 extends Node
 
 # constants 
-const teamsize=3
+const teamsize=4
 const INITIALLY_STOCKED_MEMBERS=2
 
 const price_for_town= [0,3,0,2,0]
@@ -42,9 +42,11 @@ func print_trace_with_note(note):
 	prints("Team",team_index,note)
 
 func print_trace_team_missions():
+	prints("Team",team_index,"Mission Plan ----")
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
-		prints("Team",team_index,"Mission",mission_id,mt_text[mission.mission_type],mission)
+		prints(mission_id,mt_text[mission.mission_type],mission)
+	prints("---------")
 
 
 func _ready():
@@ -103,29 +105,26 @@ func determine_next_mission(teammember):
 			teammember.start_collect_ressources()
 			return
 	
-	# keep collecting if already on in
-	if teammember.is_gathering_resources():
-			teammember.start_collect_ressources()
-			return
-		
-	# restict number of buyers to half of member count	
-	if get_number_of_buying_members()<get_member_count()/2:
+	# restrict number of buyers to half of member count	
+	if get_number_of_buying_members()>=get_member_count()/3:
 		teammember.start_search_for_settlement()
 		return
 
-	# check if we can build an extention
+	# check if we should try to build an extention
 	for mission_id in team_mission:
+		if mission_id==null:
+			continue
 		var mission=team_mission[mission_id]
 		if mission.is_done_by:
 			continue
 		match mission.mission_type:
 			MT_TOWN:
-				if get_amount_missing(Global.get_price_for_town())<=1:
+				if seems_affordable(Global.get_price_for_town()):
 					teammember.start_buy_town(mission_id,mission.settlement)
 					mission.is_done_by=teammember
 					return
 			MT_EXTENTION:
-				if get_amount_missing(owned_settlement[0].get_extention_price(mission.extention_type))<=1:	
+				if seems_affordable(owned_settlement[0].get_extention_price(mission.extention_type)):	
 					teammember.start_buy_extention(mission_id,mission.extention_type,mission.settlement)
 					mission.is_done_by=teammember
 					return
@@ -145,9 +144,9 @@ func cancel_old_mission(teammember):
 
 
 func complete_mission(completed_mission_id):
-	print_trace_with_note("Mission complete. Mission id= "+str(completed_mission_id))
+	var mission=team_mission[completed_mission_id]
+	prints("Team",team_index,"completed mission",completed_mission_id,mt_text[mission.mission_type],mission)
 	# remove the completed mission from the list and add a new one to it
-	
 	team_mission.erase(completed_mission_id)
 	do_mission_refinement()
 
@@ -172,7 +171,8 @@ func do_mission_refinement():
 	# decide new mission to add
 	# add town extention mission
 	if current_mission_mission_type_count[MT_TOWN]==0:
-		for s in range (0,owned_settlement.size()):
+		for i in range (0,owned_settlement.size()):
+			var s=owned_settlement.size()-i-1
 			if !owned_settlement[s].is_town(): # at this settlement is not a town
 				var new_mission={mission_type=MT_TOWN,settlement=owned_settlement[s],resource=owned_settlement[s].get_settlement_resource(), is_done_by=false,price=price_for_town}
 				add_mission(new_mission)
@@ -183,7 +183,7 @@ func do_mission_refinement():
 		return
 
 	# add building extention mission
-	if current_mission_mission_type_count[MT_EXTENTION]<2:
+	if current_mission_mission_type_count[MT_EXTENTION]<4 and current_mission_mission_type_count[MT_EXTENTION]<owned_settlement.size()/2:
 		for s in range (0,owned_settlement.size()):
 			var base_idea=(randi()%4+1)*10 # Basic extentions are multiple of 10 between 10 and 40
 			for idea in range (base_idea,base_idea+9):
@@ -217,15 +217,14 @@ func decide_on_settlement(target_settlement,initiating_teammate):
 		return null
 	if get_number_of_buying_members()>get_member_count()/2:	# team already occupied
 		return null
+	if !seems_affordable(target_settlement.get_settlement_price()):
+		return null
+
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
 		if (mission.mission_type==MT_SETTLEMENT 
 		  and mission.resource==target_settlement.get_settlement_resource()
 		  and !mission.is_done_by):
-			if get_amount_missing(target_settlement.settlement_price)>0:
-				continue
-			if target_settlement.get_settlement_price_count()-1>(get_resource_count()/2):
-				continue
 			mission.is_done_by=initiating_teammate
 			mission.price=target_settlement.get_settlement_price()
 			prints(initiating_teammate.get_instance_id(), "- gets ok to buy settlement. Mission ID=",mission_id)
@@ -354,3 +353,23 @@ func get_team_resources():
 			team_resources[i]+=$Teammates.get_child(p).ressource_inventory[i]
 	#prints("Team has:",team_resources)
 	return team_resources
+
+func is_mission_still_valid(mission_id,player):
+	if mission_id==null or !team_mission.has(mission_id):
+		return false
+	var mission=team_mission[mission_id]
+	if mission.is_done_by and mission.is_done_by!=player:
+		return false
+	if !mission.has("price"):
+		return true
+	if !seems_affordable(mission.price):
+		return false
+	return true
+
+func seems_affordable(price):
+	var trade_tolerance=get_resource_count()/5+1
+	return get_amount_missing(price)<=trade_tolerance
+					
+func _on_Timer_timeout():
+	print_trace_team_missions()
+	pass # replace with function body
