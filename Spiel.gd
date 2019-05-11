@@ -57,11 +57,14 @@ const settlement_price_list=[
 
 var start_time=0
 
+var log_file
+
 func _ready():
 	# Called when the node is added to the scene for the first time.
 	# Initialization here
 	randomize()
 	start_time=OS.get_system_time_secs()
+
 	for c in range(0,$Teams.get_child_count()):
 		$Teams.get_child(c).set_teamColor(team_color[c])
 	
@@ -104,5 +107,7 @@ func _ready():
 
 
 func _on_Timer_timeout():
-	prints("Time:",OS.get_system_time_secs()-start_time)
-	pass # replace with function body
+	var game_time=(OS.get_system_time_secs()-start_time)*Global.get_acceleration_factor()
+	prints("Time:",OS.get_system_time_secs()-start_time, "Game time:",int(game_time/60),":",game_time%60)
+	for t in range (0,$Teams.get_child_count()):
+		$Teams.get_child(t).log_status(game_time)

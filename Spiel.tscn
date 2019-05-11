@@ -6,7 +6,7 @@
 [ext_resource path="res://Settlement.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Team.tscn" type="PackedScene" id=5]
 
-[node name="Spiel" type="Node" index="0"]
+[node name="Spiel" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -34,19 +34,17 @@ tile_data = PoolIntArray(  )
 
 [node name="Warehouses" type="Node" parent="." index="2"]
 
-editor/display_folded = true
-
 [node name="Warehouse" parent="Warehouses" index="0" instance=ExtResource( 2 )]
 
-position = Vector2( 314, 430 )
+position = Vector2( 701.482, 234.589 )
 
 [node name="Warehouse2" parent="Warehouses" index="1" instance=ExtResource( 2 )]
 
-position = Vector2( 1045.54, 440 )
+position = Vector2( 499.39, 779.047 )
 
 [node name="Townhall" parent="." index="3" instance=ExtResource( 3 )]
 
-position = Vector2( 685.541, 441.374 )
+position = Vector2( 563.618, 514.862 )
 
 [node name="settlements" type="Node" parent="." index="4"]
 
@@ -54,15 +52,15 @@ editor/display_folded = true
 
 [node name="Settlement1" parent="settlements" index="0" instance=ExtResource( 4 )]
 
-position = Vector2( 1190.8, 161.285 )
+position = Vector2( 370.741, 324.963 )
 
 [node name="Settlement15" parent="settlements" index="1" instance=ExtResource( 4 )]
 
-position = Vector2( 1133.13, 518.581 )
+position = Vector2( 647.107, 166.173 )
 
 [node name="Settlement16" parent="settlements" index="2" instance=ExtResource( 4 )]
 
-position = Vector2( 1335.34, 172.213 )
+position = Vector2( 859.338, 958.869 )
 
 [node name="Settlement17" parent="settlements" index="3" instance=ExtResource( 4 )]
 
@@ -70,15 +68,15 @@ position = Vector2( 1014.84, 304.728 )
 
 [node name="Settlement2" parent="settlements" index="4" instance=ExtResource( 4 )]
 
-position = Vector2( 70.845, 847.125 )
+position = Vector2( 167.716, 663.405 )
 
 [node name="Settlement3" parent="settlements" index="5" instance=ExtResource( 4 )]
 
-position = Vector2( 1248.49, 863.163 )
+position = Vector2( 207.966, 943.332 )
 
 [node name="Settlement4" parent="settlements" index="6" instance=ExtResource( 4 )]
 
-position = Vector2( 454.497, 835.453 )
+position = Vector2( 386.02, 817.081 )
 
 [node name="Settlement5" parent="settlements" index="7" instance=ExtResource( 4 )]
 
@@ -98,11 +96,11 @@ position = Vector2( 209.201, 324.839 )
 
 [node name="Settlement6" parent="settlements" index="11" instance=ExtResource( 4 )]
 
-position = Vector2( 654.514, 301.591 )
+position = Vector2( 607.749, 296.58 )
 
 [node name="Settlement33" parent="settlements" index="12" instance=ExtResource( 4 )]
 
-position = Vector2( 1321.87, 661.038 )
+position = Vector2( 1014.56, 467.297 )
 
 [node name="Settlement34" parent="settlements" index="13" instance=ExtResource( 4 )]
 
@@ -110,11 +108,11 @@ position = Vector2( 792.68, 856.717 )
 
 [node name="Settlement35" parent="settlements" index="14" instance=ExtResource( 4 )]
 
-position = Vector2( 837.459, 407.075 )
+position = Vector2( 777.332, 402.064 )
 
 [node name="Settlement7" parent="settlements" index="15" instance=ExtResource( 4 )]
 
-position = Vector2( 613.26, 855.212 )
+position = Vector2( 636.643, 835.17 )
 
 [node name="Settlement21" parent="settlements" index="16" instance=ExtResource( 4 )]
 
@@ -122,7 +120,7 @@ position = Vector2( 300.877, 693.974 )
 
 [node name="Settlement22" parent="settlements" index="17" instance=ExtResource( 4 )]
 
-position = Vector2( 260.025, 517.558 )
+position = Vector2( 847.93, 262.02 )
 
 [node name="Settlement23" parent="settlements" index="18" instance=ExtResource( 4 )]
 
@@ -130,11 +128,11 @@ position = Vector2( 77.0132, 566.893 )
 
 [node name="Settlement8" parent="settlements" index="19" instance=ExtResource( 4 )]
 
-position = Vector2( 1323.2, 446.022 )
+position = Vector2( 738.636, 726.613 )
 
 [node name="Settlement9" parent="settlements" index="20" instance=ExtResource( 4 )]
 
-position = Vector2( 881.169, 709.822 )
+position = Vector2( 904.552, 754.917 )
 
 [node name="Settlement28" parent="settlements" index="21" instance=ExtResource( 4 )]
 
@@ -142,15 +140,15 @@ position = Vector2( 705.213, 562.533 )
 
 [node name="Settlement29" parent="settlements" index="22" instance=ExtResource( 4 )]
 
-position = Vector2( 1203.74, 343.183 )
+position = Vector2( 498.923, 936.098 )
 
 [node name="Settlement30" parent="settlements" index="23" instance=ExtResource( 4 )]
 
-position = Vector2( 101.176, 728.639 )
+position = Vector2( 281.556, 494.813 )
 
 [node name="Settlement31" parent="settlements" index="24" instance=ExtResource( 4 )]
 
-position = Vector2( 283.036, 858.63 )
+position = Vector2( 242.952, 805.184 )
 
 [node name="Settlement32" parent="settlements" index="25" instance=ExtResource( 4 )]
 
@@ -158,7 +156,7 @@ position = Vector2( 437.876, 583.388 )
 
 [node name="Settlement10" parent="settlements" index="26" instance=ExtResource( 4 )]
 
-position = Vector2( 844.128, 181.695 )
+position = Vector2( 842.458, 144.951 )
 
 [node name="Settlement11" parent="settlements" index="27" instance=ExtResource( 4 )]
 
@@ -166,7 +164,7 @@ position = Vector2( 590.68, 686.87 )
 
 [node name="Settlement12" parent="settlements" index="28" instance=ExtResource( 4 )]
 
-position = Vector2( 455.772, 347.81 )
+position = Vector2( 487.505, 431.319 )
 
 [node name="Settlement13" parent="settlements" index="29" instance=ExtResource( 4 )]
 
@@ -178,7 +176,7 @@ position = Vector2( 660.038, 58.0314 )
 
 [node name="Settlement24" parent="settlements" index="31" instance=ExtResource( 4 )]
 
-position = Vector2( 1078.94, 61.6706 )
+position = Vector2( 1003.78, 86.7233 )
 
 [node name="Settlement25" parent="settlements" index="32" instance=ExtResource( 4 )]
 
@@ -186,7 +184,7 @@ position = Vector2( 56.5651, 352.689 )
 
 [node name="Settlement26" parent="settlements" index="33" instance=ExtResource( 4 )]
 
-position = Vector2( 1112.38, 672.039 )
+position = Vector2( 1035.55, 683.73 )
 
 [node name="Settlement27" parent="settlements" index="34" instance=ExtResource( 4 )]
 
@@ -202,13 +200,13 @@ position = Vector2( 478.782, 164.141 )
 
 [node name="Team4" parent="Teams" index="3" instance=ExtResource( 5 )]
 
-[node name="Timer" type="Timer" parent="." index="6"]
+[node name="LogTimer" type="Timer" parent="." index="6"]
 
 process_mode = 1
-wait_time = 1.0
+wait_time = 5.0
 one_shot = false
 autostart = true
 
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="timeout" from="LogTimer" to="." method="_on_Timer_timeout"]
 
 

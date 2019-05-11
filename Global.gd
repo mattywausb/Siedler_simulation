@@ -11,6 +11,8 @@ const resource_color=[
 					"000010", # iron
 					] 
 
+const ACCELERATION_FACTOR=6
+
 var current_scene = null
 
 func _ready():
@@ -22,6 +24,9 @@ func _ready():
 #	# Called every frame. Delta is time since last frame.
 #	# Update game logic here.
 #	pass
+static func get_acceleration_factor():
+	return ACCELERATION_FACTOR
+
 static func get_price_for_town():
 	return [0,0,0,2,3]
 	

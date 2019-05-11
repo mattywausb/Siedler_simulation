@@ -58,13 +58,13 @@ texture_rotation_degrees = 0.0
 invert_enable = false
 invert_border = 100.0
 
-[node name="Timer" type="Timer" parent="." index="2"]
+[node name="ResourceTimer" type="Timer" parent="." index="2"]
 
 process_mode = 1
 wait_time = 15.0
 one_shot = false
 autostart = true
 
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="timeout" from="ResourceTimer" to="." method="_on_Timer_timeout"]
 
 

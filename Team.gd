@@ -1,7 +1,7 @@
 extends Node
 
 # constants 
-const teamsize=4
+const teamsize=8
 const INITIALLY_STOCKED_MEMBERS=2
 
 const price_for_town= [0,3,0,2,0]
@@ -39,9 +39,11 @@ var team_mission={1:{mission_type=MT_SETTLEMENT,resource=CLAY,is_done_by=false,p
 var mission_sequence=team_mission.size()+1
 
 func print_trace_with_note(note):
+	return
 	prints("Team",team_index,note)
 
 func print_trace_team_missions():
+	return
 	prints("Team",team_index,"Mission Plan ----")
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
@@ -67,7 +69,7 @@ func _ready():
 	for i in range(0,get_parent().get_child_count()):
 		if get_parent().get_child(i)==self:
 			team_index=i
-	$Scoreboard.set_position(Vector2(team_index*200,10))
+	$Scoreboard.set_position(Vector2(team_index*100,10))
 	get_node("Scoreboard/ScoreDisplay").set_text("%03d"%team_score)
 	print_trace_team_missions()
 	
@@ -227,7 +229,7 @@ func decide_on_settlement(target_settlement,initiating_teammate):
 		  and !mission.is_done_by):
 			mission.is_done_by=initiating_teammate
 			mission.price=target_settlement.get_settlement_price()
-			prints(initiating_teammate.get_instance_id(), "- gets ok to buy settlement. Mission ID=",mission_id)
+			#prints(initiating_teammate.get_instance_id(), "- gets ok to buy settlement. Mission ID=",mission_id)
 			return mission_id
 	return null
 
@@ -373,3 +375,22 @@ func seems_affordable(price):
 func _on_Timer_timeout():
 	print_trace_team_missions()
 	pass # replace with function body
+
+func log_status (game_time):
+	var income_matrix=[0,0,0,0,0]
+	
+	# collect available income
+	for settlement in owned_settlement:
+		if settlement.is_town():
+			income_matrix[settlement.get_settlement_resource()]+=2
+		else:
+			income_matrix[settlement.get_settlement_resource()]+=1
+			
+	var output_columns=[]
+	output_columns.append(game_time)
+	output_columns.append(team_index)
+	output_columns.append(team_score)
+	for i in range(0, income_matrix.size()):
+		output_columns.append(income_matrix[i])
+	prints("zzzzzzz>",output_columns)
+		
