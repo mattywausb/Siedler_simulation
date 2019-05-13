@@ -266,7 +266,7 @@ invert_border = 100.0
 
 process_mode = 1
 wait_time = 15.0
-one_shot = false
+one_shot = true
 autostart = false
 
 [node name="Sign" type="Polygon2D" parent="." index="6"]

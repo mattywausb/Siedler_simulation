@@ -108,6 +108,8 @@ func _ready():
 
 func _on_Timer_timeout():
 	var game_time=(OS.get_system_time_secs()-start_time)*Global.get_acceleration_factor()
-	prints("Time:",OS.get_system_time_secs()-start_time, "Game time:",int(game_time/60),":",game_time%60)
+	var game_time_formatted="%02d:%02d"%[game_time/60,game_time%60]
+	prints("Time:",OS.get_system_time_secs()-start_time, "Game time:",game_time_formatted)
+	$game_time_display.set_text(game_time_formatted)
 	for t in range (0,$Teams.get_child_count()):
 		$Teams.get_child(t).log_status(game_time)

@@ -12,6 +12,10 @@ const resource_color=[
 					] 
 
 const ACCELERATION_FACTOR=6
+const SETTLEMENT_INCOME=3
+const TOWN_INCOME=4
+const RESOURCE_GROW_TIME=90
+
 
 var current_scene = null
 

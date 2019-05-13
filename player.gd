@@ -129,14 +129,14 @@ func _on_Vision_area_entered(area):
 				last_seen_settlement=settlement
 				manage_task(PE_SEE_SETTLEMENT)
 
-		"PlayerVision":
-			if last_seen_player!=area.get_parent():
-				last_seen_player=area.get_parent()
-#				if last_seen_player.my_team==my_team:
-#					prints(get_instance_id(),"sees partner",last_seen_player.get_instance_id())
-#				else:
-#					prints(get_instance_id(),"sees opponent",last_seen_player.get_instance_id())
-				manage_task(PE_SEE_OTHER_PLAYER)
+#		"PlayerVision":
+#			if last_seen_player!=area.get_parent():
+#				last_seen_player=area.get_parent()
+##				if last_seen_player.my_team==my_team:
+##					prints(get_instance_id(),"sees partner",last_seen_player.get_instance_id())
+##				else:
+##					prints(get_instance_id(),"sees opponent",last_seen_player.get_instance_id())
+#				manage_task(PE_SEE_OTHER_PLAYER)
 				
 
 func print_trace_start_mission(mission_name):
@@ -220,7 +220,7 @@ func choose_task():
 			return
 	var need_score=my_team.get_resource_need_score()
 	for r in range(0,need_score.size()):
-		if need_score[r]>=4 and ressource_inventory[r]>=4:
+		if need_score[r]>=3 and ressource_inventory[r]>=3:
 			manage_PT_EXCHANGE_WITH_WAREHOUSE(PE_INIT)
 			return
 		
@@ -498,7 +498,7 @@ func manage_PT_BUY_SETTLEMENT(event):
 				enter_PO_EXCHANGE_WITH_STATION(PLAYER_BUY_TIME) #sets timer
 				return
 			else:
-				enter_PO_GO_RANDOM_POSITION(200)
+				enter_PO_GO_RANDOM_POSITION(70)
 			return
 
 		PE_REACHED_POSITION:
@@ -674,7 +674,7 @@ func manage_PT_EXCHANGE_WITH_TEAMMATE(event):
 		PE_TARGET_MET:
 			#print_trace_event(event)
 			if ! enter_PO_EXCHANGE_MASTER(): # establishes transaction and timer
-				enter_PO_GO_RANDOM_POSITION(100)
+				enter_PO_GO_RANDOM_POSITION(50)
 		
 		PE_REACHED_POSITION:
 			enter_PO_PAUSE(2)
@@ -802,10 +802,10 @@ func manage_PT_EXCHANGE_WITH_WAREHOUSE(event):
 					lowest_need_score=need_score[r]
 					needed_resource=r
 			for r in range(0,need_score.size()):
-				if need_score[r]>=4 and ressource_inventory[r]>=4:
-					ressource_inventory[r]-=4
+				if need_score[r]>=3 and ressource_inventory[r]>=3:
+					ressource_inventory[r]-=3
 					ressource_inventory[needed_resource]+=1
-					print_trace_with_note("Trade 4:1 with warehouse")
+					print_trace_with_note("Trade 3:1 with warehouse")
 					break
 			update_inventory_display()
 			end_transaction()

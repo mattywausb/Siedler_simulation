@@ -7,7 +7,7 @@ extends StaticBody2D
 # var b = "textvar"
 var transaction_partner=null
 var my_index=-1
-var current_sun_points=2  #inital sun point you get, when buying the settlement
+var current_sun_points=Global.SETTLEMENT_INCOME  #inital sun point you get, when buying the settlement
 var owner_team
 var settlement_price=[0,0,0,0,0]
 var settlement_resource=-1
@@ -61,10 +61,10 @@ func update_inventory_display():
 	if owner_team!=null:
 		for i in range(0,inventory_display.get_child_count()):
 			inventory_display.get_child(i).visible=false
-		if current_sun_points==1:
+		if current_sun_points==Global.TOWN_INCOME:
 			inventory_display.get_child(0).color=sunpoint_color
 			inventory_display.get_child(0).visible=true
-		elif current_sun_points==2:
+		if current_sun_points>=Global.SETTLEMENT_INCOME:
 			inventory_display.get_child(2).color=sunpoint_color
 			inventory_display.get_child(1).color=sunpoint_color
 			inventory_display.get_child(2).visible=true
@@ -93,11 +93,10 @@ func update_inventory_display():
 #  Events 
 
 func _on_sun_point_trigger_timeout():
-
 	if is_town:
-		current_sun_points = 2
+		current_sun_points = Global.TOWN_INCOME
 	else:
-		current_sun_points = 1
+		current_sun_points = Global.SETTLEMENT_INCOME
 
 	update_inventory_display()
 	
@@ -214,6 +213,8 @@ func give_sun_points():
 		points[settlement_resource]=current_sun_points
 		current_sun_points=0
 		update_inventory_display()
+		$sun_point_trigger.set_wait_time(Global.RESOURCE_GROW_TIME/Global.ACCELERATION_FACTOR)
+		$sun_point_trigger.start()
 	return points
 
 func upgrade_to_town():

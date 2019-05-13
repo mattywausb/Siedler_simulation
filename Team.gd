@@ -4,6 +4,7 @@ extends Node
 const teamsize=8
 const INITIALLY_STOCKED_MEMBERS=2
 
+
 const price_for_town= [0,3,0,2,0]
 
 # main properties
@@ -219,8 +220,16 @@ func decide_on_settlement(target_settlement,initiating_teammate):
 		return null
 	if get_number_of_buying_members()>get_member_count()/2:	# team already occupied
 		return null
-	if !seems_affordable(target_settlement.get_settlement_price()):
+	var price=target_settlement.get_settlement_price()
+	if !seems_affordable(price):
 		return null
+	var price_sum=0
+	for r in range(0,price.size()):
+		price_sum+=price[r]
+	if price_sum-3 > owned_settlement.size()/3: # dont buy high price without enough
+		return null
+	
+	
 
 	for mission_id in team_mission:
 		var mission=team_mission[mission_id]
@@ -261,16 +270,20 @@ func get_amount_missing(target_price):
 			deviation+=target_price[i]-team_resources[i]
 	return deviation 
 
-func get_least_produced_resource():
+func get_resource_income():
+
 	var income_matrix=[0,0,0,0,0]
 	
 	# collect available income
 	for settlement in owned_settlement:
 		if settlement.is_town():
-			income_matrix[settlement.get_settlement_resource()]+=2
+			income_matrix[settlement.get_settlement_resource()]+=Global.TOWN_INCOME
 		else:
-			income_matrix[settlement.get_settlement_resource()]+=1
+			income_matrix[settlement.get_settlement_resource()]+=Global.SETTLEMENT_INCOME
+	return income_matrix
 
+func get_least_produced_resource():
+	var income_matrix=get_resource_income()
 
 	# add already planned income
 	for mission_id in team_mission:
